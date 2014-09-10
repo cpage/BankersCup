@@ -9,11 +9,10 @@ namespace BankersCup.Controllers
 {
     public class AdminController : Controller
     {
-        private static readonly List<Team> teams = new List<Team>();
         // GET: Admin
         public ActionResult Index()
         {
-            return View(teams);
+            return View(MvcApplication.Teams);
         }
 
         public ActionResult Register()
@@ -27,7 +26,7 @@ namespace BankersCup.Controllers
         public ActionResult Register(Team newTeam)
         {
             newTeam.RegistrationCode = new Random().Next(0, 1000).ToString();
-            teams.Add(newTeam);
+            MvcApplication.Teams.Add(newTeam);
             return RedirectToAction("Index");
         }
     }

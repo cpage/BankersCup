@@ -7,6 +7,8 @@ namespace BankersCup.Models
 {
     public class Game
     {
+        public int Id { get; set; }
+
         public Course GameCourse { get; set; }
 
         public List<Team> RegisteredTeams { get; set; }

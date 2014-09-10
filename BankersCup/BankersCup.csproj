@@ -114,17 +114,21 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Filters\RegistrationRequiredAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\JoinGameViewModel.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\RegistrationViewModel.cs" />
     <Compile Include="Models\Score.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RegistrationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.css" />
@@ -164,6 +168,8 @@
     <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Admin\Register.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
+    <Content Include="Views\Game\Join.cshtml" />
+    <Content Include="Views\Game\Details.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
