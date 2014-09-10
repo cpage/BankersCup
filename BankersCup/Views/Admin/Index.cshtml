@@ -1,0 +1,42 @@
+﻿@model IEnumerable<BankersCup.Models.Team>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Registration</h2>
+
+<p>
+    @Html.ActionLink("Register New Team", "Register")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            Team Name
+        </th>
+        <th>
+            Team Members
+        </th>
+        <th>
+            Registration Code
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TeamName)
+        </td>
+        <td>
+            @foreach (var p in item.Players)
+            {
+                <p>@Html.DisplayFor(modelPlayer => p.Name) (@Html.DisplayFor(modelPlayer => p.Company))</p>
+            }
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.RegistrationCode)
+        </td>
+    </tr>
+}
+
+</table>
