@@ -28,7 +28,6 @@ namespace BankersCup.Controllers
             return View(games);
         }
 
-        // GET: Game/Details/5
         [RegistrationRequired]
         public ActionResult Details(int id)
         {
@@ -137,6 +136,7 @@ namespace BankersCup.Controllers
             return View(joinModel);
         }
 
+        [RegistrationRequired]
         public ActionResult AddHole(int id)
         {
             // get game here
@@ -173,6 +173,7 @@ namespace BankersCup.Controllers
         }
 
         [HttpPost]
+        [RegistrationRequired]
         public ActionResult AddHole(AddHoleScoreViewModel newScore)
         {
             TeamHoleScore score = new TeamHoleScore();
