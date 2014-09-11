@@ -1,0 +1,45 @@
+﻿@model IEnumerable<BankersCup.Models.GameSummaryViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Available Games</h2>
+
+@*<p>
+    @Html.ActionLink("Create New", "Create")
+</p>*@
+<table class="table">
+    <tr>
+        <th>
+            Event Name
+        </th>
+        <th>
+            Course
+        </th>
+        <th>
+            Event Date
+        </th>
+        <th>
+            Number of Teams
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.ActionLink(item.EventName, "Details", new { id = item.GameId })
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CourseName)
+        </td>
+        <td>
+            @item.GameDate.ToString("yyyy-MM-dd")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.NumberOfTeams)
+        </td>
+    </tr>
+}
+
+</table>

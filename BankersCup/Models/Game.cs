@@ -9,11 +9,15 @@ namespace BankersCup.Models
     {
         public int Id { get; set; }
 
+        public DateTime GameDate { get; set; }
+
+        public string Name { get; set; }
+
         public Course GameCourse { get; set; }
 
         public List<Team> RegisteredTeams { get; set; }
 
-        public List<PlayerScore> Scores { get; set; }
+        public List<TeamHoleScore> Scores { get; set; }
 
     }
 }

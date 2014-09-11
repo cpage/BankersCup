@@ -1,0 +1,61 @@
+﻿@model BankersCup.Models.AddHoleScoreViewModel
+
+@{
+    ViewBag.Title = "AddHole";
+}
+
+<h2>AddHole</h2>
+@if (@Model.AllHoleScoresEntered)
+{
+    <p>Your round is done my friend.</p>
+    @Html.ActionLink("Return to Game", "Details", new { id = Model.GameId })
+} else { 
+using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.HoleNumber)
+        @Html.HiddenFor(model => model.Distance)
+        @Html.HiddenFor(model => model.Par)
+        @Html.HiddenFor(model => model.GameId)
+        @Html.HiddenFor(model => model.TeamId)
+
+        <div class="form-horizontal">
+            <h4>AddHoleScoreViewModel</h4>
+            <hr />
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            <dl class="dl-horizontal">
+                <dt>
+                    @Html.DisplayNameFor(model => model.HoleNumber)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.HoleNumber)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Distance)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Distance)
+                </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.Par)
+                </dt>
+                <dd>
+                    @Html.DisplayFor(model => model.Par)
+                </dd>
+            </dl>
+            <div class="form-group">
+                @Html.LabelFor(model => model.TeamScore, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.TeamScore, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.TeamScore, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    }
+}

@@ -5,11 +5,10 @@ using System.Text;
 
 namespace BankersCup.Models
 {
-    public class TeamHoleScore
+    public class HoleInfo
     {
         public int HoleNumber { get; set; }
-        public int TeamId { get; set; }
-        public int Score { get; set; }
-        public int AgainstPar { get; set; }
+        public int Distance { get; set; }
+        public int Par { get; set; }
     }
 }

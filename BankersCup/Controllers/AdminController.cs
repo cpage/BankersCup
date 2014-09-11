@@ -12,7 +12,7 @@ namespace BankersCup.Controllers
         // GET: Admin
         public ActionResult Index()
         {
-            return View(MvcApplication.Teams);
+            return View(MvcApplication.CurrentGame.RegisteredTeams);
         }
 
         public ActionResult Register()
@@ -26,7 +26,7 @@ namespace BankersCup.Controllers
         public ActionResult Register(Team newTeam)
         {
             newTeam.RegistrationCode = new Random().Next(0, 1000).ToString();
-            MvcApplication.Teams.Add(newTeam);
+            MvcApplication.CurrentGame.RegisteredTeams.Add(newTeam);
             return RedirectToAction("Index");
         }
     }

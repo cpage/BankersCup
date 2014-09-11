@@ -9,8 +9,14 @@ namespace BankersCup.Models
     {
         public string Name { get; set; }
 
-        public int Par { get; set; }
+        public int Par { get { return Holes.Sum(h => h.Par); } }
+        public int Distance { get { return Holes.Sum(h => h.Distance); } }
 
+        public List<HoleInfo> Holes { get; set; }
 
+        public Course()
+        {
+            Holes = new List<HoleInfo>();
+        }
     }
 }

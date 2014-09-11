@@ -1,19 +1,94 @@
-﻿@model BankersCup.Models.Game
+﻿@model BankersCup.Models.GameDetailsViewModel
 
 @{
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
-
+<h3>Game Details</h3>
 <div>
-    <h4>Game</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <div>
+        <h4>Course</h4>
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.GameCourse.Name)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.GameCourse.Name)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => model.GameCourse.Par)
+            </dt>
+            <dd>
+                @Html.DisplayFor(model => model.GameCourse.Par)
+            </dd>
+        </dl>
+    </div>
 
-    </dl>
+    <div>
+        <h4>Leaderboard through @Model.HolesPlayed Holes</h4>
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        Position
+                    </td>
+                    <td>
+                        Team Name
+                    </td>
+                    <td>
+                        Score
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @for (int count = 0; count < Model.Leaderboard.Count; count++)
+                {
+                    <tr>
+                        <td>#@(count + 1)</td>
+                        <td>@Model.Leaderboard[count].TeamName</td>
+                        <td>@Model.Leaderboard[count].AgainstPar.ToString("+#;-#;0") (@Model.Leaderboard[count].TotalScore)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div>
+        <h4>@Model.CurrentTeam.TeamName</h4>
+        Team Members
+        <ul>
+            @foreach (var p in Model.CurrentTeam.Players)
+            {
+                <li>@p.Name</li>
+            }
+        </ul>
+
+
+        <p>Current Round:</p>
+        @if (Model.HolesPlayed < Model.GameCourse.Holes.Count)
+        { @Html.ActionLink("Add Next Hole", "AddHole", new { id = Model.GameId });
+        }
+        <table>
+            <thead>
+                <tr>
+                    <td>
+                        Hole
+                    </td>
+                    <td>
+                        Score
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var score in Model.CurrentTeamScores)
+                {
+                    <tr>
+                        <td>@score.HoleNumber</td>
+                        <td>@score.Score (@score.AgainstPar.ToString("+#;-#;E"))</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
