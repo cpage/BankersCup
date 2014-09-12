@@ -78,6 +78,7 @@
                     <td>
                         Score
                     </td>
+                    <td></td>
                 </tr>
             </thead>
             <tbody>
@@ -86,6 +87,7 @@
                     <tr>
                         <td>@score.HoleNumber</td>
                         <td>@score.Score (@score.AgainstPar.ToString("+#;-#;E"))</td>
+                        <td>@Html.ActionLink("Edit", "AddHole", new { id = Model.GameId, holeNumber = score.HoleNumber })</td>
                     </tr>
                 }
             </tbody>

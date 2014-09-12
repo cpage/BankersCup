@@ -149,7 +149,7 @@ namespace BankersCup.Controllers
         }
 
         [RegistrationRequired]
-        public async Task<ActionResult> AddHole(int id)
+        public async Task<ActionResult> AddHole(int id, int? holeNumber)
         {
             // get game here
             var game = await DocumentDBRepository.GetGameById(id);
@@ -158,17 +158,35 @@ namespace BankersCup.Controllers
 
             var teamScores = game.Scores.Where(s => s.TeamId == teamId);
 
-            if(teamScores.Count() >= game.GameCourse.Holes.Count)
+            if(holeNumber == null && teamScores.Count() >= game.GameCourse.Holes.Count)
             {
                 return View(new AddHoleScoreViewModel() { AllHoleScoresEntered = true, GameId = game.GameId });
             }
-            
-            var currentHole = teamScores.Last().HoleNumber;
-            if(++currentHole == 19)
-            {
-                currentHole = 1;
-            }
 
+            int currentHole = 0;
+            var existingHoleScore = game.Scores.FirstOrDefault(s => s.TeamId == teamId && s.HoleNumber == holeNumber.GetValueOrDefault());
+
+            if (holeNumber == null || existingHoleScore == null)
+            {
+
+                if (teamScores.Count() == 0)
+                {
+                    currentHole = game.RegisteredTeams.First(t => t.TeamId == teamId).StartingHole;
+                }
+                else
+                {
+                    currentHole = ++teamScores.Last().HoleNumber;
+                }
+
+                if (currentHole == 19)
+                {
+                    currentHole = 1;
+                }
+            }
+            else
+            {
+                currentHole = holeNumber.Value;
+            }
             var holeInfo = game.GameCourse.Holes.First(h => h.HoleNumber == currentHole);
 
             AddHoleScoreViewModel vm = new AddHoleScoreViewModel()
@@ -178,7 +196,7 @@ namespace BankersCup.Controllers
                 Par = holeInfo.Par,
                 Distance = holeInfo.Distance,
                 TeamId = teamId,
-                TeamScore = holeInfo.Par
+                TeamScore = existingHoleScore == null ? holeInfo.Par : existingHoleScore.Score
             };
             
             return View(vm);
@@ -189,13 +207,20 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> AddHole(AddHoleScoreViewModel newScore)
         {
             var game = await DocumentDBRepository.GetGameById(newScore.GameId);
-            TeamHoleScore score = new TeamHoleScore();
-            score.TeamId = newScore.TeamId;
-            score.HoleNumber = newScore.HoleNumber;
+
+            var score = game.Scores.FirstOrDefault(s => s.TeamId == newScore.TeamId && s.HoleNumber == newScore.HoleNumber);
+
+            if(score == null)
+            {
+                score = new TeamHoleScore();
+                game.Scores.Add(score);
+                score.TeamId = newScore.TeamId;
+                score.HoleNumber = newScore.HoleNumber;
+            }
+
             score.Score = newScore.TeamScore;
             score.AgainstPar = newScore.TeamScore - newScore.Par;
-
-            game.Scores.Add(score);
+            
 
             await DocumentDBRepository.UpdateGame(game);
             return RedirectToAction("Details", new { id = newScore.GameId });

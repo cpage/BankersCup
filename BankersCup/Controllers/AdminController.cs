@@ -165,36 +165,36 @@ namespace BankersCup.Controllers
             };
 
             game.Scores = new List<TeamHoleScore>() {
-                new TeamHoleScore() {
-                    HoleNumber = 1,
-                    Score = 3,
-                    TeamId = 1
-                },
-                new TeamHoleScore() {
-                    HoleNumber = 10,
-                    Score = 5,
-                    TeamId = 2
-                },
-                new TeamHoleScore() {
-                    HoleNumber = 2,
-                    Score = 4,
-                    TeamId = 1
-                },
-                new TeamHoleScore() {
-                    HoleNumber = 11,
-                    Score = 4,
-                    TeamId = 2
-                },
-                new TeamHoleScore() {
-                    HoleNumber = 3,
-                    Score = 4,
-                    TeamId = 1
-                },
-                new TeamHoleScore() {
-                    HoleNumber = 4,
-                    Score = 6,
-                    TeamId = 1
-                },
+                //new TeamHoleScore() {
+                //    HoleNumber = 1,
+                //    Score = 3,
+                //    TeamId = 1
+                //},
+                //new TeamHoleScore() {
+                //    HoleNumber = 10,
+                //    Score = 5,
+                //    TeamId = 2
+                //},
+                //new TeamHoleScore() {
+                //    HoleNumber = 2,
+                //    Score = 4,
+                //    TeamId = 1
+                //},
+                //new TeamHoleScore() {
+                //    HoleNumber = 11,
+                //    Score = 4,
+                //    TeamId = 2
+                //},
+                //new TeamHoleScore() {
+                //    HoleNumber = 3,
+                //    Score = 4,
+                //    TeamId = 1
+                //},
+                //new TeamHoleScore() {
+                //    HoleNumber = 4,
+                //    Score = 6,
+                //    TeamId = 1
+                //},
             };
 
             foreach (var s in game.Scores)
