@@ -207,5 +207,28 @@ namespace BankersCup.Controllers
             return RedirectToAction("Index", "Game");
 
         }
+
+        public async Task<ActionResult> PurgeGames()
+        {
+            return View(new Tuple<bool, string>(false, string.Empty));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PurgeGames(string confirmationCode)
+        {
+            if(confirmationCode == DateTime.Now.ToString("yyyyMMddHHmm"))
+            {
+
+                var allGames = await DocumentDBRepository.GetAllGamesAsync(true);
+                foreach(var game in allGames)
+                {
+                    await DocumentDBRepository.DeleteGame(game.GameId, true);
+                }
+
+                return View(new Tuple<bool, string>(true, "Success"));
+            }
+
+            return View(new Tuple<bool, string>(true, "Try again"));
+        }
     }
 }

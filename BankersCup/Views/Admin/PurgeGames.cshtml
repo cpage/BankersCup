@@ -1,0 +1,19 @@
+﻿@model Tuple<bool, string>
+@{
+    ViewBag.Title = "PurgeGames";
+}
+
+<h2>Purge Games - Confirmation</h2>
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        @Html.Label("confirmationCode", "Confirmation Code")
+        @Html.Password("confirmationCode") <span>@if(Model.Item1) { @Model.Item2 }</span>
+    </div>
+    <div class="form-group">
+        <div class="col-md-offset-2 col-md-10">
+            <input type="submit" value="Confirm" class="btn btn-default" />
+        </div>
+    </div>
+}
+

@@ -42,15 +42,21 @@ namespace BankersCup.DataAccess
             return await Client.ReplaceDocumentAsync(game.SelfLink, game);
         }
 
-        public static async Task<Document> DeleteGame(int id)
+        public static async Task<Document> DeleteGame(int id, bool hardDelete = false)
         {
             var game = await GetGameById(id);
             if (game == null)
                 return null;
 
-            game.IsDeleted = true;
+            
 
-            return await Client.ReplaceDocumentAsync(game.SelfLink, game);
+            if(!hardDelete)
+            {
+                game.IsDeleted = true;
+                return await Client.ReplaceDocumentAsync(game.SelfLink, game);
+            }
+
+            return await Client.DeleteDocumentAsync(game.SelfLink);
         }
 
         private static Database database;

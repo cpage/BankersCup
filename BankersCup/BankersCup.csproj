@@ -182,6 +182,7 @@
     <Content Include="Views\Game\Details.cshtml" />
     <Content Include="Views\Game\AddHole.cshtml" />
     <Content Include="Views\Game\Index.cshtml" />
+    <Content Include="Views\Admin\PurgeGames.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
