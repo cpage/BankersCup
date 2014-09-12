@@ -5,36 +5,44 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using BankersCup.DataAccess;
+using System.Threading.Tasks;
 
 namespace BankersCup.Controllers
 {
     public class GameController : Controller
     {
         // GET: Game
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            
-            var currentGame = MvcApplication.CurrentGame;
-            var currentGameVM = new GameSummaryViewModel()
-            {
-                GameId = currentGame.Id,
-                CourseName = currentGame.GameCourse.Name,
-                GameDate = currentGame.GameDate,
-                EventName = currentGame.Name,
-                NumberOfTeams = currentGame.RegisteredTeams.Count
-            };
 
-            List<GameSummaryViewModel> games = new List<GameSummaryViewModel>() { currentGameVM };
-            return View(games);
+            var games = await DocumentDBRepository.GetAllGamesAsync();
+
+            var gamesVM = new List<GameSummaryViewModel>();
+            foreach(var game in games)
+            {
+                gamesVM.Add(new GameSummaryViewModel()
+                {
+                    GameId = game.GameId,
+                    CourseName = game.GameCourse.Name,
+                    GameDate = game.GameDate,
+                    EventName = game.Name,
+                    NumberOfTeams = game.RegisteredTeams.Count
+                });
+
+
+            }
+
+            return View(gamesVM);
         }
 
         [RegistrationRequired]
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
 
-            var game = MvcApplication.CurrentGame;
+            var game = await DocumentDBRepository.GetGameById(id);
 
-            var currentTeamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.Id);
+            var currentTeamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
 
             GameDetailsViewModel vm = new GameDetailsViewModel();
             vm.GameId = id;
@@ -50,14 +58,14 @@ namespace BankersCup.Controllers
         }
 
         // GET: Game/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
             return View();
         }
 
         // POST: Game/Create
         [HttpPost]
-        public ActionResult Create(FormCollection collection)
+        public async Task<ActionResult> Create(FormCollection collection)
         {
             try
             {
@@ -72,14 +80,14 @@ namespace BankersCup.Controllers
         }
 
         // GET: Game/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
             return View();
         }
 
         // POST: Game/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public async Task<ActionResult> Edit(int id, FormCollection collection)
         {
             try
             {
@@ -94,14 +102,16 @@ namespace BankersCup.Controllers
         }
 
         // GET: Game/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            return View();
+            await DocumentDBRepository.DeleteGame(id);
+
+            return RedirectToAction("Index");
         }
 
         // POST: Game/Delete/5
         [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        public async Task<ActionResult> Delete(int id, FormCollection collection)
         {
             try
             {
@@ -115,7 +125,7 @@ namespace BankersCup.Controllers
             }
         }
 
-        public ActionResult Join(int id)
+        public async Task<ActionResult> Join(int id)
         {
             // get game here
             JoinGameViewModel vm = new JoinGameViewModel() { Id = id };
@@ -123,10 +133,12 @@ namespace BankersCup.Controllers
         }
 
         [HttpPost]
-        public ActionResult Join(JoinGameViewModel joinModel)
+        public async Task<ActionResult> Join(JoinGameViewModel joinModel)
         {
             // get game and validate if the registration code exists
-            var team = MvcApplication.CurrentGame.RegisteredTeams.FirstOrDefault(t => t.RegistrationCode == joinModel.RegistrationCode);
+            var game = await DocumentDBRepository.GetGameById(joinModel.Id);
+
+            var team = game.RegisteredTeams.FirstOrDefault(t => t.RegistrationCode == joinModel.RegistrationCode);
             if(team != null)
             {
                 RegistrationHelper.SetRegistrationCookie(this.HttpContext, joinModel.Id, team.TeamId);
@@ -137,18 +149,18 @@ namespace BankersCup.Controllers
         }
 
         [RegistrationRequired]
-        public ActionResult AddHole(int id)
+        public async Task<ActionResult> AddHole(int id)
         {
             // get game here
-            var game = MvcApplication.CurrentGame;
+            var game = await DocumentDBRepository.GetGameById(id);
 
-            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.Id);
+            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
 
             var teamScores = game.Scores.Where(s => s.TeamId == teamId);
 
             if(teamScores.Count() >= game.GameCourse.Holes.Count)
             {
-                return View(new AddHoleScoreViewModel() { AllHoleScoresEntered = true, GameId = game.Id });
+                return View(new AddHoleScoreViewModel() { AllHoleScoresEntered = true, GameId = game.GameId });
             }
             
             var currentHole = teamScores.Last().HoleNumber;
@@ -161,7 +173,7 @@ namespace BankersCup.Controllers
 
             AddHoleScoreViewModel vm = new AddHoleScoreViewModel()
             {
-                GameId = MvcApplication.CurrentGame.Id,
+                GameId = game.GameId,
                 HoleNumber = holeInfo.HoleNumber,
                 Par = holeInfo.Par,
                 Distance = holeInfo.Distance,
@@ -174,23 +186,25 @@ namespace BankersCup.Controllers
 
         [HttpPost]
         [RegistrationRequired]
-        public ActionResult AddHole(AddHoleScoreViewModel newScore)
+        public async Task<ActionResult> AddHole(AddHoleScoreViewModel newScore)
         {
+            var game = await DocumentDBRepository.GetGameById(newScore.GameId);
             TeamHoleScore score = new TeamHoleScore();
             score.TeamId = newScore.TeamId;
             score.HoleNumber = newScore.HoleNumber;
             score.Score = newScore.TeamScore;
             score.AgainstPar = newScore.TeamScore - newScore.Par;
 
-            MvcApplication.CurrentGame.Scores.Add(score);
+            game.Scores.Add(score);
 
+            await DocumentDBRepository.UpdateGame(game);
             return RedirectToAction("Details", new { id = newScore.GameId });
 
         }
 
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)
         {
-            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.Id);
+            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.GameId);
             int holesPlayed = currentGame.Scores.Count(s => s.TeamId == teamId);
 
             return holesPlayed;
@@ -201,7 +215,7 @@ namespace BankersCup.Controllers
         {
             var teamNames = currentGame.RegisteredTeams.ToDictionary(x => x.TeamId, v => v.TeamName);
             int holesPlayed = calculateHolesPlayedForCurrentTeam(currentGame);
-            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.Id);
+            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.GameId);
 
             var teamScores = currentGame.Scores.GroupBy(k => k.TeamId).ToDictionary(k => k.Key, v => v.ToList());
             var leaderBoard = new List<LeaderboardEntryViewModel>();

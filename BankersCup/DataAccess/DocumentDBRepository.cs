@@ -14,15 +14,21 @@ namespace BankersCup.DataAccess
     public static class DocumentDBRepository
     {
 
-        public static async Task<List<Game>> GetAllGamesAsync()
+        public static async Task<List<Game>> GetAllGamesAsync(bool includeDeleted = false)
         {
-            return await Task<List<Game>>.Run( () => Client.CreateDocumentQuery<Game>(Collection.DocumentsLink).AsEnumerable().ToList());
+            string sql = "SELECT * FROM games g";
+            if(!includeDeleted)
+            {
+                sql += " WHERE g.IsDeleted = false";
+            }
+
+            return await Task<List<Game>>.Run(() => Client.CreateDocumentQuery<Game>(Collection.DocumentsLink, sql).AsEnumerable().ToList());
             
         }
 
         public static async Task<Game> GetGameById(int gameId)
         {
-            return await Task<Game>.Run(() => Client.CreateDocumentQuery<Game>(Collection.DocumentsLink).Single(g => g.Id == gameId));
+            return await Task<Game>.Run(() => Client.CreateDocumentQuery<Game>(Collection.DocumentsLink).Where(g => g.GameId == gameId).AsEnumerable().FirstOrDefault());
 
         }
 
@@ -31,9 +37,20 @@ namespace BankersCup.DataAccess
             return await Client.CreateDocumentAsync(Collection.DocumentsLink, newGame);
         }
 
-        public static async Task<Game> UpdateGame(Game game)
+        public static async Task<Document> UpdateGame(Game game)
         {
-            return await Client.ReplaceDocumentAsync()
+            return await Client.ReplaceDocumentAsync(game.SelfLink, game);
+        }
+
+        public static async Task<Document> DeleteGame(int id)
+        {
+            var game = await GetGameById(id);
+            if (game == null)
+                return null;
+
+            game.IsDeleted = true;
+
+            return await Client.ReplaceDocumentAsync(game.SelfLink, game);
         }
 
         private static Database database;
@@ -142,5 +159,6 @@ namespace BankersCup.DataAccess
                 database = await Client.CreateDatabaseAsync(database);
             }
         }
+
     }
 }

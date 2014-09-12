@@ -1,7 +1,9 @@
-﻿using BankersCup.Models;
+﻿using BankersCup.DataAccess;
+using BankersCup.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Optimization;
@@ -11,28 +13,36 @@ namespace BankersCup
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static readonly Game CurrentGame = new Game();
+        public static Game CurrentGame;
 
 
-        protected void Application_Start()
+        protected async void Application_Start()
         {
-            initializeGame();
+            //var allGames = await DocumentDBRepository.GetAllGamesAsync();
+            //CurrentGame = allGames.FirstOrDefault();
+
+            //if(CurrentGame == null)
+            //{
+            //    await initializeGame();
+            //}
+            
             AreaRegistration.RegisterAllAreas();
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
             RouteConfig.RegisterRoutes(RouteTable.Routes);
             BundleConfig.RegisterBundles(BundleTable.Bundles);
         }
 
-        private static void initializeGame()
+        private static async Task initializeGame()
         {
+            CurrentGame = new Game();
             Game game = CurrentGame;
-            game.Name = "Banker's Cup 2014";
-            game.GameDate = DateTime.Now.AddDays(7);
-            game.Id = 1;
+                game.Name = "Banker's Cup 2014";
+                game.GameDate = DateTime.Now.AddDays(7);
+                game.GameId = 1;
 
-            game.GameCourse = new Course() { Name = "Glen Abbey" };
+                game.GameCourse = new Course() { Name = "Glen Abbey" };
 
-            game.GameCourse.Holes = new List<HoleInfo>()
+                game.GameCourse.Holes = new List<HoleInfo>()
             {
                 new HoleInfo() { HoleNumber = 1, Distance = 460, Par = 5 },
                 new HoleInfo() { HoleNumber = 2, Distance = 380, Par = 4 },
@@ -54,7 +64,7 @@ namespace BankersCup
                 new HoleInfo() { HoleNumber = 18, Distance = 461, Par = 5 },
             };
 
-            game.RegisteredTeams = new List<Team>()
+                game.RegisteredTeams = new List<Team>()
             {
                 new Team() {
                     RegistrationCode = "12345",
@@ -103,7 +113,7 @@ namespace BankersCup
 
             };
 
-            game.Scores = new List<TeamHoleScore>() {
+                game.Scores = new List<TeamHoleScore>() {
                 new TeamHoleScore() {
                     HoleNumber = 1,
                     Score = 3,
@@ -136,11 +146,12 @@ namespace BankersCup
                 },
             };
 
-            foreach (var s in game.Scores)
-            {
-                s.AgainstPar = s.Score - game.GameCourse.Holes[s.HoleNumber - 1].Par;
-            }
+                foreach (var s in game.Scores)
+                {
+                    s.AgainstPar = s.Score - game.GameCourse.Holes[s.HoleNumber - 1].Par;
+                }
 
+                await DocumentDBRepository.CreateGame(game);
         }
     }
 }

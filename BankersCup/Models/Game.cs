@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -7,8 +8,15 @@ namespace BankersCup.Models
 {
     public class Game
     {
-        public int Id { get; set; }
+        [JsonProperty("_self")]
+        public string SelfLink { get; set; }
 
+        [JsonProperty("id")]
+        public string DocumentId { get; set; }
+
+        public int GameId { get; set; }
+
+        
         public DateTime GameDate { get; set; }
 
         public string Name { get; set; }
@@ -19,5 +27,6 @@ namespace BankersCup.Models
 
         public List<TeamHoleScore> Scores { get; set; }
 
+        public bool IsDeleted { get; set; }
     }
 }
