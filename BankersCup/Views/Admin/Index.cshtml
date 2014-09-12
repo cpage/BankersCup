@@ -1,13 +1,13 @@
-﻿@model IEnumerable<BankersCup.Models.Team>
+﻿@model BankersCup.Models.Game
 
 @{
     ViewBag.Title = "Index";
 }
 
-<h2>Registration</h2>
+<h2>Registration for @Model.Name</h2>
 
 <p>
-    @Html.ActionLink("Register New Team", "Register")
+    @Html.ActionLink("Register New Team", "Register", new { id = Model.GameId } )
 </p>
 <table class="table">
     <tr>
@@ -18,11 +18,14 @@
             Team Members
         </th>
         <th>
+            Tee Time
+        </th>
+        <th>
             Registration Code
         </th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.RegisteredTeams) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.TeamName)
@@ -32,6 +35,9 @@
             {
                 <p>@Html.DisplayFor(modelPlayer => p.Name) (@Html.DisplayFor(modelPlayer => p.Company))</p>
             }
+        </td>
+        <td>
+            @item.TeeTime.ToString("hh:mmtt") on Hole @item.StartingHole
         </td>
         <td>
             @Html.DisplayFor(modelItem => item.RegistrationCode)

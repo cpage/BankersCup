@@ -15,14 +15,24 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Index(int id)
         {
             var game = await DocumentDBRepository.GetGameById(id);
-
-            return View(game.RegisteredTeams);
+            return View(game);
         }
 
-        public async Task<ActionResult> Register(int id)
+        public async Task<ActionResult> Register(int id, int? teamId)
         {
+            var game = await DocumentDBRepository.GetGameById(id);
+            
             Team teamModel = new Team();
-            teamModel.Players = new List<Player>() { new Player() };
+            
+            if (teamId == null)
+            {
+                teamModel.Players = new List<Player>() { new Player() };
+            }
+            else
+            {
+                teamModel = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == teamId.Value);
+            }
+
             return View(teamModel);
         }
 
@@ -30,12 +40,30 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Register(int id, Team newTeam)
         {
             var game = await DocumentDBRepository.GetGameById(id);
-            newTeam.RegistrationCode = new Random().Next(0, 1000).ToString();
-            game.RegisteredTeams.Add(newTeam);
+            if(newTeam.TeamId == 0)
+            {
+                if(game.RegisteredTeams.Count == 0)
+                {
+                    newTeam.TeamId = 1;
+                }
+                else
+                {
+                    newTeam.TeamId = game.RegisteredTeams.Max(t => t.TeamId) + 1;
+                }
+                newTeam.RegistrationCode = new Random().Next(0, 1000).ToString();
+                game.RegisteredTeams.Add(newTeam);
+            }
+            else
+            {
+                var currentTeam = game.RegisteredTeams.First(t => t.TeamId == newTeam.TeamId);
+                currentTeam.TeamName = newTeam.TeamName;
+                currentTeam.StartingHole = newTeam.StartingHole;
+                currentTeam.Players = newTeam.Players;
+            }
 
             await DocumentDBRepository.UpdateGame(game);
 
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", new { id = id } );
         }
 
         public async Task<ActionResult> GenerateSampleGame()
@@ -85,6 +113,8 @@ namespace BankersCup.Controllers
                     RegistrationCode = "12345",
                     TeamId = 1,
                     TeamName = "Infusion",
+                    StartingHole = 1,
+                    TeeTime = game.GameDate.Date.AddHours(9),
                     Players = new List<Player>() {
                         new Player() {
                             Company = "Infusion",
@@ -107,6 +137,8 @@ namespace BankersCup.Controllers
                     RegistrationCode = "67890",
                     TeamId = 2,
                     TeamName = "Indigo",
+                    StartingHole = 10,
+                    TeeTime = game.GameDate.Date.AddHours(9).AddMinutes(15),
                     Players = new List<Player>() {
                         new Player() {
                             Company = "Indigo",
