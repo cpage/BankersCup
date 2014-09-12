@@ -56,6 +56,8 @@
                         @Html.EditorFor(model => model.Players[count].Company, new { htmlAttributes = new { @class = "form-control" } })
                         @Html.ValidationMessageFor(model => model.Players[count].Company, "", new { @class = "text-danger" })
                     </div>
+                    @Html.HiddenFor(model => model.Players[count].IsRemoved)
+                    <span>Remove Player</span>
                 </div>
             }
 
@@ -71,7 +73,7 @@
 }
 
 <div>
-    @Html.ActionLink("Back to List", "Index")
+@*    @Html.ActionLink("Back to List", "Index", )*@
 </div>
 
 @section Scripts {
@@ -94,16 +96,33 @@
 + "                    <input class=\"form-control text-box single-line\" id=\"Players_idx__Company\" name=\"Players[idx].Company\" type=\"text\" value=\"\" />"
 + "                    <span class=\"field-validation-valid text-danger\" data-valmsg-for=\"Players[idx].Company\" data-valmsg-replace=\"true\"></span>"
 + "                </div>"
++ "                <input data-val=\"true\" data-val-required=\"The IsRemoved field is required.\" id=\"Players_idx__IsRemoved\" name=\"Players[idx].IsRemoved\" type=\"hidden\" value=\"False\" />"
++ "                <span>Remove Player</span>"
 + "            </div>"
 + "</div>";
 
         $(document).ready(function () {
             $("#addPlayerLink").click(addNewPlayer);
+            $("div.player > span").each(function (i, e) {
+                $(this).click(function () {
+                    removePlayer($(this));
+                });
+            });
         });
 
         function addNewPlayer() {
             var nextIndex = $("div.player").length;
             $("#playerList").append(playerTemplate.replace(/idx/g, nextIndex));
+            $("div.player > span").last().click(function () {
+                removePlayer($(this));
+            });
         }
+
+        function removePlayer(spanObj) {
+            spanObj.parent().hide();
+            spanObj.parent().find("input[type='hidden']").val("True");
+
+        }
+
     </script>
 }

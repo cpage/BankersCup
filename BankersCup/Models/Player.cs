@@ -10,5 +10,6 @@ namespace BankersCup.Models
         public string Name { get; set; }
         public string Email { get; set; }
         public string Company { get; set; }
+        public bool IsRemoved { get; set; }
     }
 }

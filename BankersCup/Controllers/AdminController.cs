@@ -59,6 +59,10 @@ namespace BankersCup.Controllers
                 currentTeam.TeamName = newTeam.TeamName;
                 currentTeam.StartingHole = newTeam.StartingHole;
                 currentTeam.Players = newTeam.Players;
+                foreach(var player in currentTeam.Players.Where(p => p.IsRemoved).ToList())
+                {
+                    currentTeam.Players.Remove(player);
+                }
             }
 
             await DocumentDBRepository.UpdateGame(game);

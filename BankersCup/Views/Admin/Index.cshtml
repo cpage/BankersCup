@@ -28,7 +28,7 @@
 @foreach (var item in Model.RegisteredTeams) {
     <tr>
         <td>
-            @Html.DisplayFor(modelItem => item.TeamName)
+            @Html.ActionLink(item.TeamName, "Register", new {id = Model.GameId, teamId = item.TeamId})
         </td>
         <td>
             @foreach (var p in item.Players)

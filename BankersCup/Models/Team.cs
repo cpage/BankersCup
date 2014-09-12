@@ -13,6 +13,6 @@ namespace BankersCup.Models
         public int StartingHole { get; set; }
         public DateTime TeeTime { get; set; }
         public List<Player> Players { get; set; }
-
+        
     }
 }
