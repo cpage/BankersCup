@@ -189,6 +189,8 @@ namespace BankersCup.Controllers
             }
             var holeInfo = game.GameCourse.Holes.First(h => h.HoleNumber == currentHole);
 
+            var averageScore = game.Scores.Where(s => s.HoleNumber == currentHole).Average(s => s.Score);
+
             AddHoleScoreViewModel vm = new AddHoleScoreViewModel()
             {
                 GameId = game.GameId,
@@ -196,7 +198,8 @@ namespace BankersCup.Controllers
                 Par = holeInfo.Par,
                 Distance = holeInfo.Distance,
                 TeamId = teamId,
-                TeamScore = existingHoleScore == null ? holeInfo.Par : existingHoleScore.Score
+                TeamScore = existingHoleScore == null ? holeInfo.Par : existingHoleScore.Score,
+                AverageScore = averageScore
             };
             
             return View(vm);

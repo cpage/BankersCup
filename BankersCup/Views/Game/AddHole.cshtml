@@ -42,6 +42,12 @@ using (Html.BeginForm())
                 <dd>
                     @Html.DisplayFor(model => model.Par)
                 </dd>
+                <dt>
+                    @Html.DisplayNameFor(model => model.AverageScore)
+                </dt>
+                <dd>
+                    @Model.AverageScore.ToString("#.0")
+                </dd>
             </dl>
             <div class="form-group">
                 @Html.LabelFor(model => model.TeamScore, htmlAttributes: new { @class = "control-label col-md-2" })

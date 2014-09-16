@@ -13,6 +13,7 @@ namespace BankersCup.Models
         public int Distance { get; set; }
         public int TeamScore { get; set; }
         public int TeamId { get; set; }
+        public double AverageScore { get; set; }
         public bool AllHoleScoresEntered { get; set; }
     }
 }
