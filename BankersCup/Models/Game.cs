@@ -28,5 +28,15 @@ namespace BankersCup.Models
         public List<TeamHoleScore> Scores { get; set; }
 
         public bool IsDeleted { get; set; }
+
+        public int GetNextTeamId()
+        {
+            if(RegisteredTeams == null || RegisteredTeams.Count == 0)
+            {
+                return 1;
+            }
+
+            return RegisteredTeams.Max(t => t.TeamId) + 1;
+        }
     }
 }

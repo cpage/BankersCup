@@ -2,6 +2,7 @@
 using BankersCup.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
@@ -229,6 +230,85 @@ namespace BankersCup.Controllers
             }
 
             return View(new Tuple<bool, string>(true, "Try again"));
+        }
+
+        public async Task<ActionResult> ImportTeams(int id)
+        {
+
+            return View(new ImportTeamsViewModel() { GameId = id });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ImportTeams(int id, ImportTeamsViewModel importVM)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+
+            if(importVM.TeamsFile != null)
+            {
+                if(game.RegisteredTeams == null)
+                {
+                    game.RegisteredTeams = new List<Team>();
+                }
+
+                if(importVM.RemoveExistingTeams)
+                {
+                    game.RegisteredTeams.Clear();    
+                }
+
+                string contents = string.Empty;
+                using (var reader = new StreamReader(importVM.TeamsFile.InputStream))
+                {
+                    contents = await reader.ReadToEndAsync();
+                }
+
+                int successfullyCreated = 0;
+                var teamLines = contents.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+                for (int count = 1; count < teamLines.Length; count++ )
+                {
+
+                    var teamData = teamLines[count].Split(',');
+                    if (teamData.Length != 10)
+                    {
+                        continue;
+                    }
+
+                    var team = new Team();
+                    team.TeamId = game.GetNextTeamId();
+                    team.TeamName = teamData[0];
+                    team.RegistrationCode = teamData[1];
+                    int startingHole;
+                    if (!Int32.TryParse(teamData[2], out startingHole))
+                    {
+                        startingHole = 1;
+                    }
+                    team.StartingHole = startingHole;
+                    team.TeeTime = game.GameDate.Date.AddHours(9);
+
+                    var player1 = new Player();
+                    player1.Name = teamData[4];
+                    player1.Company = teamData[5];
+                    player1.Email = teamData[6];
+
+                    var player2 = new Player();
+                    player2.Name = teamData[7];
+                    player2.Company = teamData[8];
+                    player2.Email = teamData[9];
+
+                    team.Players = new List<Player>() { player1, player2 };
+
+                    game.RegisteredTeams.Add(team);
+                    successfullyCreated++;
+                }
+
+
+                await DocumentDBRepository.UpdateGame(game);
+
+                importVM.Message = string.Format("{0} teams successfully created.", successfullyCreated);
+                return View(importVM);
+            }
+            return RedirectToAction("Index", new { id = id });
+
         }
     }
 }

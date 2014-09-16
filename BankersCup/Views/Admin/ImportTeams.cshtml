@@ -1,0 +1,47 @@
+﻿@model BankersCup.Models.ImportTeamsViewModel
+
+@{
+    ViewBag.Title = "ImportTeams";
+}
+
+<h2>Import Teams</h2>
+
+@using (Html.BeginForm("ImportTeams", "Admin", new { id = Model.GameId }, FormMethod.Post, new { enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    
+    @Html.HiddenFor(model => model.GameId)
+    <div class="form-horizontal">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.TeamsFile, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input type="file" id="TeamsFile" name="TeamsFile"/>
+            </div>
+            <div class="col-md-10">
+                <a href="~/Data/BankersCup_TeamImport_Template.csv">Download Import Template</a>
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.RemoveExistingTeams, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.RemoveExistingTeams)
+                    @Html.ValidationMessageFor(model => model.RemoveExistingTeams, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <p>Result: @Model.Message</p>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Import" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Back to List", "Index")
+</div>

@@ -129,6 +129,7 @@
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\GameDetailsViewModel.cs" />
     <Compile Include="Models\HoleInfo.cs" />
+    <Compile Include="Models\ImportTeamsViewModel.cs" />
     <Compile Include="Models\JoinGameViewModel.cs" />
     <Compile Include="Models\LeaderboardEntryViewModel.cs" />
     <Compile Include="Models\GameSummaryViewModel.cs" />
@@ -148,6 +149,7 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Data\BankersCup_TeamImport_Template.csv" />
     <None Include="Properties\PublishProfiles\bankerscup.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -183,6 +185,7 @@
     <Content Include="Views\Game\AddHole.cshtml" />
     <Content Include="Views\Game\Index.cshtml" />
     <Content Include="Views\Admin\PurgeGames.cshtml" />
+    <Content Include="Views\Admin\ImportTeams.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
