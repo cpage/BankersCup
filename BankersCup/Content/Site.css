@@ -22,12 +22,16 @@ textarea {
     max-width: 280px;
 }
 
+a:hover {
+    text-decoration: none;
+}
 .content-area {
     background-image: url("/Content/bg_photo_640.jpg");
     min-height: 100vh;
     background-position-x: center;
     background-repeat: no-repeat;
     background-size: cover;
+    padding-bottom: 50px;
 }
 
 .content-section {
@@ -48,7 +52,7 @@ textarea {
 
 .content-dialog {
     background-color: rgba(255, 255, 255, 0.8);
-    margin: 20px auto;
+    margin: 20px auto 50px auto;
     padding: 0 0 20px 0;
 }
 .content-dialog-header {
@@ -118,6 +122,16 @@ textarea {
     padding: 10px;
 }
 
+.add-hole-button {
+    background-color: #25AD5F;
+    color: white;
+    text-transform: uppercase;
+    border: 0;
+    padding: 10px;
+    margin: 15px auto 0 auto;
+    width: 50%;
+    display:block;
+}
 .join-overlay {
     background-color: rgba(41, 175, 203, 0.9);
     min-height: 100vh;
@@ -141,6 +155,13 @@ textarea {
 
 .join-text-divider {
     padding: 20px 0;
+}
+
+.footer-ad {
+    width: 100%;
+    position:fixed;
+    bottom: 0px;
+    left: 0px;
 }
 /* header blue: 34aabd*/
 /* body green: 25ad5f*/

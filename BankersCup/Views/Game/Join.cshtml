@@ -16,7 +16,7 @@
         <img class="join-text-divider" src="~/Content/divider_white.png" />
         <p>enter your</p>
         <p>registration code</p>
-        @Html.EditorFor(model => model.RegistrationCode, new { htmlAttributes = new { @class = "dialog-text-input table-data-entry" } })
+        @Html.EditorFor(model => model.RegistrationCode, new { htmlAttributes = new { @class = "dialog-text-input table-data-entry", autofocus = true } })
         <input type="submit" value="Join" class="dark-button table-data-entry" />
     </div>
     
