@@ -4,7 +4,7 @@
 @*<div class="header">
     <img src="~/Content/icon_menu.png" class="menu-img" />
 </div>*@
-<div class="navbar navbar-inverse navbar-fixed-top">
+<div class="navbar navbar-inverse">
     <div class="container">
         <div class="navbar-header">
             <img src="~/Content/logo_sml.png" class="header-image" />
@@ -27,7 +27,9 @@
 <div class="container body-content">
     <div class="content-dialog">
         <div class="content-dialog-header">
-            @ViewBag.Title
+            <span class="content-dialog-title">@ViewBag.Title</span>
+            @if (ViewBag.CloseUrl != null)
+            { <a class="content-dialog-close-span" href="@ViewBag.CloseUrl"><span>X</span></a> }
         </div>
         <div class="content-dialog-body">
             @RenderBody()

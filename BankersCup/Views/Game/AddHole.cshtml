@@ -2,7 +2,8 @@
 
 @{
     Layout = "~/Views/Shared/_HeaderLayout.cshtml";
-    ViewBag.Title = "Add Next Hole";
+    ViewBag.Title = "Add Score";
+    ViewBag.CloseUrl = Url.Action("Scorecard", "Game", new { id = ViewBag.GameId });
 }
 @if (@Model.AllHoleScoresEntered)
 {
@@ -24,12 +25,14 @@ using (Html.BeginForm())
         <thead>
             <tr>
                 <td>Hole</td>
+                <td></td>
                 <td>Par</td>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>@Model.HoleNumber</td>
+                <td></td>
                 <td>@Model.Par</td>
             </tr>
         </tbody>
@@ -38,12 +41,14 @@ using (Html.BeginForm())
         <thead>
             <tr>
                 <td>Distance</td>
+                <td></td>
                 <td>Avg. Score</td>
             </tr>
         </thead>
         <tbody>
             <tr>
                 <td>@Model.Distance</td>
+                <td></td>
                 <td>@Model.AverageScore.ToString("#.0")</td>
             </tr>
         </tbody>
@@ -62,8 +67,7 @@ using (Html.BeginForm())
             </tr>
             <tr>
                 <td>
-                    <input id="saveNext" type="submit" value="Save & Next" class="dark-button table-data-entry" />
-                    <input type="submit" value="Save & Back" class="dark-button table-data-entry" />
+                    <input id="saveNext" type="submit" value="Next Score" class="dark-button table-data-entry" />
                 </td>
             </tr>
         </tbody>

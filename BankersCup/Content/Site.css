@@ -22,8 +22,9 @@ textarea {
     max-width: 280px;
 }
 
-a:hover {
+a,a:visited,a:active,a:hover {
     text-decoration: none;
+    color: white;
 }
 .content-area {
     background-image: url("/Content/bg_photo_640.jpg");
@@ -47,7 +48,7 @@ a:hover {
 .header-image {
     margin: 0 auto;
     display:block;
-    padding: 10px 0;
+    padding: 25px 0;
 }
 
 .menu-img {
@@ -63,7 +64,7 @@ a:hover {
 }
 .content-dialog-header {
     background-color: #25AD5F;
-    padding: 5px;
+    padding: 15px 0;
     color: white;
     width: 100%;
     text-align: center;
@@ -76,14 +77,23 @@ a:hover {
     padding: 0 30px;
 }
 
+.content-dialog-title {
+    display: block;
+}
+.content-dialog-close-span {
+    display:block;
+    float:right;
+    padding-right: 15px;
+    margin-top: -22px;
+}
 .dialog-section-image {
     display:block;
-    margin: 30px auto 0 auto;
+    margin: 30px auto;
     width: 100%;
 }
 
 .table-dialog-content {
-    margin: 0 auto;
+    margin: 20px auto;
     font-size: 12pt;
     color: #061A27;
     width: 100%;
@@ -96,7 +106,7 @@ a:hover {
 .table-dialog-content > thead > tr > td,
 .table-dialog-content > tbody > tr > td
  {
-    width: 50%;
+    width: 33%;
     text-align: center;
     text-transform: uppercase;
 }
@@ -199,4 +209,8 @@ a:hover {
 }
 .scorecard-col3 {
     width: 10% !important;
+}
+
+.scorecard-score {
+    padding-right: 10px;
 }

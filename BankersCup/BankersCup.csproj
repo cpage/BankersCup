@@ -147,8 +147,12 @@
     <Content Include="Content\background.jpg" />
     <Content Include="Content\bg_photo_640.jpg" />
     <Content Include="Content\bootstrap.css" />
+    <Content Include="Content\bootstrap.min.css">
+      <DependentUpon>bootstrap.css</DependentUpon>
+    </Content>
     <Content Include="Content\divider_white.png" />
     <Content Include="Content\header_image.png" />
+    <Content Include="Content\icon_edit.png" />
     <Content Include="Content\icon_golf_course.png" />
     <Content Include="Content\icon_leaderboard.png" />
     <Content Include="Content\icon_menu.png" />
@@ -157,6 +161,9 @@
     <Content Include="Content\logo_lrg.png" />
     <Content Include="Content\logo_med.png" />
     <Content Include="Content\logo_sml.png" />
+    <Content Include="Content\Site.min.css">
+      <DependentUpon>Site.css</DependentUpon>
+    </Content>
     <Content Include="favicon.ico" />
     <Content Include="fonts\font-endzoneslab-bold\assets\bold.svg" />
     <Content Include="fonts\font-endzoneslab-bold\font-endzoneslab-bold.css" />
