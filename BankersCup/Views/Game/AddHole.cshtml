@@ -17,6 +17,7 @@ using (Html.BeginForm())
         @Html.HiddenFor(model => model.Par)
         @Html.HiddenFor(model => model.GameId)
         @Html.HiddenFor(model => model.TeamId)
+        @Html.HiddenFor(model => model.NextHoleAfterSave)
 
     <img class="dialog-section-image" src="~/Content/icon_round_details.png" />
     <table class="table-dialog-content">
@@ -61,7 +62,8 @@ using (Html.BeginForm())
             </tr>
             <tr>
                 <td>
-                    <input type="submit" value="Save Score" class="dark-button table-data-entry" />
+                    <input id="saveNext" type="submit" value="Save & Next" class="dark-button table-data-entry" />
+                    <input type="submit" value="Save & Back" class="dark-button table-data-entry" />
                 </td>
             </tr>
         </tbody>
@@ -74,6 +76,10 @@ using (Html.BeginForm())
     <script>
         $(document).ready(function () {
             $("#TeamScore").select();
+            $("#saveNext").click(function () {
+                $("#NextHoleAfterSave").val("True");
+            });
         })
+
     </script>
 }

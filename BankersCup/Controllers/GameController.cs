@@ -17,6 +17,7 @@ namespace BankersCup.Controllers
         {
 
             var games = await DocumentDBRepository.GetAllGamesAsync();
+            ViewBag.GameId = 1;
 
             var gamesVM = new List<GameSummaryViewModel>();
             foreach(var game in games)
@@ -41,6 +42,7 @@ namespace BankersCup.Controllers
         {
             
             var game = await DocumentDBRepository.GetGameById(id.GetValueOrDefault(1));
+            ViewBag.GameId = game.GameId;
 
             var currentTeamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
 
@@ -137,6 +139,7 @@ namespace BankersCup.Controllers
         {
             // get game and validate if the registration code exists
             var game = await DocumentDBRepository.GetGameById(joinModel.Id);
+            ViewBag.GameId = game.GameId;
 
             var team = game.RegisteredTeams.FirstOrDefault(t => t.RegistrationCode == joinModel.RegistrationCode);
             if(team != null)
@@ -153,6 +156,7 @@ namespace BankersCup.Controllers
         {
             // get game here
             var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
 
             var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
 
@@ -210,6 +214,7 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> AddHole(AddHoleScoreViewModel newScore)
         {
             var game = await DocumentDBRepository.GetGameById(newScore.GameId);
+            ViewBag.GameId = game.GameId;
 
             var score = game.Scores.FirstOrDefault(s => s.TeamId == newScore.TeamId && s.HoleNumber == newScore.HoleNumber);
 
@@ -226,8 +231,38 @@ namespace BankersCup.Controllers
             
 
             await DocumentDBRepository.UpdateGame(game);
-            return RedirectToAction("Details", new { id = newScore.GameId });
+            
+            return RedirectToAction(newScore.NextHoleAfterSave ? "AddHole" : "Details", new { id = newScore.GameId });
+            
 
+        }
+
+        [RegistrationRequired]
+        public async Task<ActionResult> Leaderboard(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
+            LeaderboardViewModel leaderboardVM = new LeaderboardViewModel();
+            int teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+            leaderboardVM.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == teamId);
+            leaderboardVM.HolesPlayed = calculateHolesPlayedForCurrentTeam(game);
+            leaderboardVM.Teams = calculateLeaderboardBasedOnCurrentTeam(game);
+
+            return View(leaderboardVM);
+        }
+
+        [RegistrationRequired]
+        public async Task<ActionResult> Scorecard(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
+            ScorecardViewModel vm = new ScorecardViewModel();
+            vm.GameId = game.GameId;
+            vm.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId));
+            vm.HoleScores = game.Scores.Where(s => s.TeamId == vm.CurrentTeam.TeamId).ToList();
+            return View(vm);
         }
 
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)
@@ -241,18 +276,44 @@ namespace BankersCup.Controllers
 
         private List<LeaderboardEntryViewModel> calculateLeaderboardBasedOnCurrentTeam(Game currentGame)
         {
-            var teamNames = currentGame.RegisteredTeams.ToDictionary(x => x.TeamId, v => v.TeamName);
-            int holesPlayed = calculateHolesPlayedForCurrentTeam(currentGame);
-            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.GameId);
-
-            var teamScores = currentGame.Scores.GroupBy(k => k.TeamId).ToDictionary(k => k.Key, v => v.ToList());
-            var leaderBoard = new List<LeaderboardEntryViewModel>();
-            foreach(var team in teamScores)
+            var leaderboard = new List<LeaderboardEntryViewModel>();
+            foreach (var team in currentGame.RegisteredTeams)
             {
-                leaderBoard.Add(new LeaderboardEntryViewModel() { TeamName = teamNames[team.Key], TotalScore = team.Value.Take(holesPlayed).Sum(h => h.Score), AgainstPar = team.Value.Take(holesPlayed).Sum(h => h.AgainstPar) });
+                var leaderboardEntry = new LeaderboardEntryViewModel();
+                leaderboardEntry.TeamName = team.TeamName;
+                int holesPlayed = calculateHolesPlayedForCurrentTeam(currentGame);
+
+                var teamScores = currentGame.Scores.Where(s => s.TeamId == team.TeamId).Take(holesPlayed);
+                leaderboardEntry.AgainstPar = teamScores.Sum(s => s.AgainstPar);
+
+                leaderboardEntry.TotalScore = teamScores.Sum(s => s.Score);
+                int currentHole;
+                if (teamScores.Count() == 0)
+                {
+                    currentHole = team.StartingHole;
+                }
+                else if (teamScores.Count() == 18)
+                {
+                    currentHole = 0;
+                }
+                else
+                {
+                    currentHole = teamScores.Max(s => s.HoleNumber) + 1;
+                }
+
+                if (currentHole > 18)
+                {
+                    currentHole = 1;
+                }
+
+                leaderboardEntry.CurrentHole = currentHole;
+                leaderboardEntry.HolesPlayed = teamScores.Count();
+
+                leaderboard.Add(leaderboardEntry);
+
             }
 
-            return leaderBoard.OrderBy(s => s.AgainstPar).ToList();
+            return leaderboard.OrderBy(s => s.AgainstPar).ToList();
         }
 
 

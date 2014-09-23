@@ -4025,7 +4025,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
 .navbar {
   position: relative;
   z-index: 1000;
-  min-height: 50px;
+  min-height: 80px;
   margin-bottom: 20px;
   border: 1px solid transparent;
 }
@@ -4213,7 +4213,7 @@ textarea.input-group-sm > .input-group-btn > .btn {
   position: relative;
   float: right;
   padding: 9px 10px;
-  margin-top: 8px;
+  margin-top: -55px;
   margin-right: 15px;
   margin-bottom: 8px;
   background-color: transparent;
@@ -4498,11 +4498,12 @@ textarea.input-group-sm > .input-group-btn > .btn {
 
 .navbar-default .navbar-link:hover {
   color: #333333;
+
 }
 
 .navbar-inverse {
-  background-color: #222222;
-  border-color: #080808;
+  background-color: #29AFCB;
+  border-color: #29AFCB;
 }
 
 .navbar-inverse .navbar-brand {
@@ -4520,7 +4521,9 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-inverse .navbar-nav > li > a {
-  color: #999999;
+  color: white;
+  font-family: NFLEndzoneSlabLight;
+  text-transform: uppercase;
 }
 
 .navbar-inverse .navbar-nav > li > a:hover,
@@ -4544,12 +4547,12 @@ textarea.input-group-sm > .input-group-btn > .btn {
 }
 
 .navbar-inverse .navbar-toggle {
-  border-color: #333333;
+  /*border-color: #333333;*/
 }
 
-.navbar-inverse .navbar-toggle:hover,
+/*.navbar-inverse .navbar-toggle:hover,*/
 .navbar-inverse .navbar-toggle:focus {
-  background-color: #333333;
+  /*background-color: #25AD5F;*/
 }
 
 .navbar-inverse .navbar-toggle .icon-bar {

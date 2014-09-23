@@ -5,7 +5,7 @@
     ViewBag.Title = "Game Details";
 }
 
-<img class="dialog-section-image" src="~/Content/icon_golf_course.png" />
+@*<img class="dialog-section-image" src="~/Content/icon_golf_course.png" />
 <table class="table-dialog-content">
     <thead>
         <tr>
@@ -19,27 +19,59 @@
             <td>@Model.GameCourse.Par</td>
         </tr>
     </tbody>
-</table>
+</table>*@
 
 <img class="dialog-section-image" src="~/Content/icon_leaderboard.png" />
 <table class="table-dialog-content">
     <thead>
         <tr>
-            <td>Team</td>
-            <td>Score</td>
+            <td colspan="3">Leaderboard through @Model.HolesPlayed holes...</td>
+            @*<td class="leaderboard-table-position"></td>
+            <td class="leaderboard-table-team">Team</td>
+            <td class="leaderboard-table-score">Score</td>*@
         </tr>
     </thead>
     <tbody>
-        @for (int count = 0; count < Math.Min(Model.Leaderboard.Count, 3); count++)
+    @{
+        bool teamFound = false;
+        bool divederUsed = false;
+        int teamsToDisplay = 2;
+        bool isCurrentTeam = false;
+        int previousScore = Int32.MinValue;
+        bool showPosition = true;
+    }
+            @for (int count = 0; count < Model.Leaderboard.Count; count++)
         {
-            <tr>
-                @*<td>#@(count + 1)</td>*@
-                <td>@Model.Leaderboard[count].TeamName</td>
-                <td>@Model.Leaderboard[count].AgainstPar.ToString("+#;-#;E")</td>
-            </tr>
+            showPosition = Model.Leaderboard[count].AgainstPar != previousScore;
+            previousScore = Model.Leaderboard[count].AgainstPar;
+            isCurrentTeam = Model.CurrentTeam.TeamName == Model.Leaderboard[count].TeamName;
+            if (!teamFound && isCurrentTeam) { teamFound = true; }
+
+            if (!teamFound && count > (teamsToDisplay-1))
+            {
+                if (!divederUsed) {
+                    <tr>
+                        <td colspan="3"><img src="~/Content/divider_white.png" /></td>
+                    </tr>
+                    divederUsed = true;
+                }
+                continue;
+            }
+
+            if (count < teamsToDisplay || isCurrentTeam) {
+                <tr class="@if(Model.CurrentTeam.TeamName == Model.Leaderboard[count].TeamName) {<text>current-team</text>}">
+                    <td class="leaderboard-table-position">@if(showPosition) {<text>#@(count + 1)</text>}</td>
+                    <td class="leaderboard-table-team">@Model.Leaderboard[count].TeamName</td>
+                    <td class="leaderboard-table-score">@Model.Leaderboard[count].AgainstPar.ToString("+#;-#;E")</td>
+                </tr>
+            }
         }
-    </tbody>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <a href="@Url.Action("Leaderboard", new { id = Model.GameId })"><input type="button" value="Full Leaderboard" class="add-hole-button" /></a>
+                </td>
+            </tr>
+        </tfoot>
 </table>
-@if (Model.HolesPlayed < 18) { 
-<a href="@Url.Action("AddHole", new { id = Model.GameId })"><input type="button" value="Add next hole" class="add-hole-button" /></a>
-}

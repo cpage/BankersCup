@@ -1,0 +1,31 @@
+﻿@model BankersCup.Models.LeaderboardViewModel
+
+@{
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+    ViewBag.Title = string.Format("Leaderboard through {0} hole{1}...", Model.HolesPlayed, Model.HolesPlayed == 1 ? string.Empty : "s");
+}
+
+<img class="dialog-section-image" src="~/Content/icon_leaderboard.png" />
+<table class="table-dialog-content">
+    <tbody>
+        @{
+            bool isCurrentTeam = false;
+            int previousScore = Int32.MinValue;
+            bool showPosition = true;
+        }
+        @for (int count = 0; count < Model.Teams.Count; count++)
+        {
+            showPosition = Model.Teams[count].AgainstPar != previousScore;
+            previousScore = Model.Teams[count].AgainstPar;
+            isCurrentTeam = Model.CurrentTeam.TeamName == Model.Teams[count].TeamName;
+
+
+            <tr class="@if(Model.CurrentTeam.TeamName == Model.Teams[count].TeamName) {<text>current-team</text>}">
+                <td class="leaderboard-table-position">@if (showPosition)
+                {<text>#@(count + 1)</text>}</td>
+                <td class="leaderboard-table-team">@Model.Teams[count].TeamName</td>
+                <td class="leaderboard-table-score">@Model.Teams[count].AgainstPar.ToString("+#;-#;E")</td>
+            </tr>
+        }
+    </tbody>
+</table>

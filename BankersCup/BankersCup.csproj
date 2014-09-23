@@ -133,9 +133,11 @@
     <Compile Include="Models\JoinGameViewModel.cs" />
     <Compile Include="Models\LeaderboardEntryViewModel.cs" />
     <Compile Include="Models\GameSummaryViewModel.cs" />
+    <Compile Include="Models\LeaderboardViewModel.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\RegistrationViewModel.cs" />
     <Compile Include="Models\Score.cs" />
+    <Compile Include="Models\ScorecardViewModel.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RegistrationHelper.cs" />
@@ -145,7 +147,6 @@
     <Content Include="Content\background.jpg" />
     <Content Include="Content\bg_photo_640.jpg" />
     <Content Include="Content\bootstrap.css" />
-    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\divider_white.png" />
     <Content Include="Content\header_image.png" />
     <Content Include="Content\icon_golf_course.png" />
@@ -217,6 +218,8 @@
     <Content Include="Views\Admin\Leaderboard.cshtml" />
     <Content Include="Views\Admin\Authorize.cshtml" />
     <Content Include="Views\Shared\_HeaderLayout.cshtml" />
+    <Content Include="Views\Game\Leaderboard.cshtml" />
+    <Content Include="Views\Game\Scorecard.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

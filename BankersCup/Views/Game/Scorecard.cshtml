@@ -1,0 +1,41 @@
+﻿@model BankersCup.Models.ScorecardViewModel
+
+@{
+    ViewBag.Title = "Scorecard";
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+}
+
+
+
+<img class="dialog-section-image" src="~/Content/icon_round_details.png" />
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td class="scorecard-col1">Hole</td>
+            <td class="scorecard-col2">Score</td>
+            <td class="scorecard-col3"></td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var score in Model.HoleScores)
+        {
+            <tr>
+                <td class="scorecard-col1">@score.HoleNumber</td>
+                <td class="scorecard-col2">@score.Score</td>
+                <td class="scorecard-col3"><a href="@Url.Action("AddHole", new { id = Model.GameId, holeNumber = score.HoleNumber })"><img src="~/Content/icon_menu.png" /></a></td>
+            </tr>
+        }
+    </tbody>
+    @if (Model.HoleScores.Count < 18)
+    {
+        <tfoot>
+            <tr>
+                <td colspan="3">
+                    <a href="@Url.Action("AddHole", new { id = Model.GameId })"><input type="button" value="Add next hole" class="add-hole-button" /></a>
+                </td>
+            </tr>
+        </tfoot>
+        
+    }
+
+</table>
