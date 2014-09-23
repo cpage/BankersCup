@@ -192,8 +192,12 @@ namespace BankersCup.Controllers
                 currentHole = holeNumber.Value;
             }
             var holeInfo = game.GameCourse.Holes.First(h => h.HoleNumber == currentHole);
-
-            var averageScore = game.Scores.Where(s => s.HoleNumber == currentHole).Average(s => s.Score);
+            var scores = game.Scores.Where(s => s.HoleNumber == currentHole);
+            double averageScore = 0.0;
+            if(scores.Count() > 0)
+            {
+                averageScore = game.Scores.Where(s => s.HoleNumber == currentHole).Average(s => s.Score);
+            }
 
             AddHoleScoreViewModel vm = new AddHoleScoreViewModel()
             {

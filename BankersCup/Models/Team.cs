@@ -10,6 +10,7 @@ namespace BankersCup.Models
         public int TeamId { get; set; }
         public string RegistrationCode { get; set; }
         public string TeamName { get; set; }
+        public string Institution { get; set; }
         public int StartingHole { get; set; }
         public DateTime TeeTime { get; set; }
         public List<Player> Players { get; set; }

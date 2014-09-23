@@ -133,6 +133,7 @@
     <Compile Include="Models\JoinGameViewModel.cs" />
     <Compile Include="Models\LeaderboardEntryViewModel.cs" />
     <Compile Include="Models\GameSummaryViewModel.cs" />
+    <Compile Include="Models\AdminLeaderboardViewModel.cs" />
     <Compile Include="Models\LeaderboardViewModel.cs" />
     <Compile Include="Models\Player.cs" />
     <Compile Include="Models\RegistrationViewModel.cs" />
@@ -145,6 +146,8 @@
   <ItemGroup>
     <Content Include="Content\ad_1.png" />
     <Content Include="Content\background.jpg" />
+    <Content Include="Content\banner_no_text.png" />
+    <Content Include="Content\banner_text.png" />
     <Content Include="Content\bg_photo_640.jpg" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css">
@@ -158,8 +161,10 @@
     <Content Include="Content\icon_menu.png" />
     <Content Include="Content\icon_round_details.png" />
     <Content Include="Content\icon_teams.png" />
+    <Content Include="Content\logo_infusion.png" />
     <Content Include="Content\logo_lrg.png" />
     <Content Include="Content\logo_med.png" />
+    <Content Include="Content\logo_msft.png" />
     <Content Include="Content\logo_sml.png" />
     <Content Include="Content\Site.min.css">
       <DependentUpon>Site.css</DependentUpon>

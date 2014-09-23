@@ -1,12 +1,15 @@
-﻿@model IEnumerable<BankersCup.Models.LeaderboardEntryViewModel>
+﻿@model BankersCup.Models.AdminLeaderboardViewModel
 
 @{
     ViewBag.Title = "Leaderboard";
 }
 
 <h2>Leaderboard</h2>
-
-<table class="table">
+<select id="selectLeaderboard">
+    <option selected value="leaderboardByTeams">By Teams</option>
+    <option value="leaderboardByInsitutions">By Institutions</option>
+</select>
+<table id="leaderboardByTeams" class="table">
     <tr>
         <th>
             Team Name
@@ -25,7 +28,7 @@
         </th>
     </tr>
 
-@foreach (var item in Model) {
+@foreach (var item in Model.ByTeams) {
     <tr>
         <td>
             @Html.DisplayFor(modelItem => item.TeamName)
@@ -46,3 +49,58 @@
 }
 
 </table>
+
+<table style="display:none;" id="leaderboardByInsitutions" class="table">
+    <tr>
+        <th>
+            Institution Name
+        </th>
+        <th>
+            Total Score
+        </th>
+        <th>
+            Against Par
+        </th>
+        <th>
+            # Holes Played
+        </th>
+    </tr>
+
+    @foreach (var item in Model.ByInstitutions)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.TeamName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalScore)
+            </td>
+            <td>
+                @item.AgainstPar.ToString("+#;-#;E")
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HolesPlayed)
+            </td>
+        </tr>
+    }
+
+</table>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#selectLeaderboard").change(function () {
+                var selectedValue = $("#selectLeaderboard option:selected").val();
+                $("table").each(function () {
+                    if($(this).attr("id") == selectedValue)
+                    {
+                        $(this).show();
+                    }
+                    else {
+                        $(this).hide();
+                    }
+                })
+            });
+        });
+    </script>
+    }

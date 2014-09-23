@@ -103,31 +103,31 @@ namespace BankersCup.Controllers
             game.DocumentId = game.GameId.ToString();
 
             game.Name = "Banker's Cup 2014";
-            game.GameDate = DateTime.Now.AddDays(7);
+            game.GameDate = DateTime.Parse("2014/09/25");
 
 
-            game.GameCourse = new Course() { Name = "Glen Abbey" };
+            game.GameCourse = new Course() { Name = "King's Riding" };
 
             game.GameCourse.Holes = new List<HoleInfo>()
             {
-                new HoleInfo() { HoleNumber = 1, Distance = 460, Par = 5 },
+                new HoleInfo() { HoleNumber = 1, Distance = 460, Par = 4 },
                 new HoleInfo() { HoleNumber = 2, Distance = 380, Par = 4 },
-                new HoleInfo() { HoleNumber = 3, Distance = 123, Par = 3 },
+                new HoleInfo() { HoleNumber = 3, Distance = 123, Par = 4 },
                 new HoleInfo() { HoleNumber = 4, Distance = 345, Par = 4 },
-                new HoleInfo() { HoleNumber = 5, Distance = 452, Par = 5 },
+                new HoleInfo() { HoleNumber = 5, Distance = 452, Par = 3 },
                 new HoleInfo() { HoleNumber = 6, Distance = 395, Par = 4 },
-                new HoleInfo() { HoleNumber = 7, Distance = 135, Par = 3 },
+                new HoleInfo() { HoleNumber = 7, Distance = 135, Par = 4 },
                 new HoleInfo() { HoleNumber = 8, Distance = 391, Par = 4 },
-                new HoleInfo() { HoleNumber = 9, Distance = 383, Par = 4 },
-                new HoleInfo() { HoleNumber = 10, Distance = 369, Par = 4 },
+                new HoleInfo() { HoleNumber = 9, Distance = 383, Par = 5 },
+                new HoleInfo() { HoleNumber = 10, Distance = 369, Par = 5 },
                 new HoleInfo() { HoleNumber = 11, Distance = 435, Par = 4 },
                 new HoleInfo() { HoleNumber = 12, Distance = 152, Par = 3 },
-                new HoleInfo() { HoleNumber = 13, Distance = 481, Par = 5 },
+                new HoleInfo() { HoleNumber = 13, Distance = 481, Par = 4 },
                 new HoleInfo() { HoleNumber = 14, Distance = 330, Par = 4 },
-                new HoleInfo() { HoleNumber = 15, Distance = 115, Par = 3 },
-                new HoleInfo() { HoleNumber = 16, Distance = 452, Par = 5 },
+                new HoleInfo() { HoleNumber = 15, Distance = 115, Par = 5 },
+                new HoleInfo() { HoleNumber = 16, Distance = 452, Par = 3 },
                 new HoleInfo() { HoleNumber = 17, Distance = 365, Par = 4 },
-                new HoleInfo() { HoleNumber = 18, Distance = 461, Par = 5 },
+                new HoleInfo() { HoleNumber = 18, Distance = 461, Par = 4 },
             };
 
             game.RegisteredTeams = new List<Team>()
@@ -224,7 +224,7 @@ namespace BankersCup.Controllers
 
             await DocumentDBRepository.CreateGame(game);
 
-            return RedirectToAction("Index", "Game");
+            return RedirectToAction("Index", "Admin", new { id = game.GameId });
 
         }
 
@@ -287,7 +287,7 @@ namespace BankersCup.Controllers
                 {
 
                     var teamData = teamLines[count].Split(',');
-                    if (teamData.Length != 10)
+                    if (teamData.Length != 11)
                     {
                         continue;
                     }
@@ -295,9 +295,10 @@ namespace BankersCup.Controllers
                     var team = new Team();
                     team.TeamId = game.GetNextTeamId();
                     team.TeamName = teamData[0];
-                    team.RegistrationCode = teamData[1];
+                    team.Institution = teamData[1];
+                    team.RegistrationCode = teamData[2];
                     int startingHole;
-                    if (!Int32.TryParse(teamData[2], out startingHole))
+                    if (!Int32.TryParse(teamData[3], out startingHole))
                     {
                         startingHole = 1;
                     }
@@ -305,14 +306,14 @@ namespace BankersCup.Controllers
                     team.TeeTime = game.GameDate.Date.AddHours(9);
 
                     var player1 = new Player();
-                    player1.Name = teamData[4];
-                    player1.Company = teamData[5];
-                    player1.Email = teamData[6];
+                    player1.Name = teamData[5];
+                    player1.Company = teamData[6];
+                    player1.Email = teamData[7];
 
                     var player2 = new Player();
-                    player2.Name = teamData[7];
-                    player2.Company = teamData[8];
-                    player2.Email = teamData[9];
+                    player2.Name = teamData[8];
+                    player2.Company = teamData[9];
+                    player2.Email = teamData[10];
 
                     team.Players = new List<Player>() { player1, player2 };
 
@@ -333,7 +334,12 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Leaderboard(int id)
         {
             var game = await DocumentDBRepository.GetGameById(id);
-            var leaderboard = new List<LeaderboardEntryViewModel>();
+
+            var leaderboard = new AdminLeaderboardViewModel();
+            leaderboard.ByTeams = new List<LeaderboardEntryViewModel>();
+            leaderboard.ByInstitutions = new List<LeaderboardEntryViewModel>();
+
+            var leaderboardListByTeam = new List<LeaderboardEntryViewModel>();
             foreach(var team in game.RegisteredTeams)
             {
                 var leaderboardEntry = new LeaderboardEntryViewModel();
@@ -365,10 +371,28 @@ namespace BankersCup.Controllers
                 leaderboardEntry.CurrentHole = currentHole;
                 leaderboardEntry.HolesPlayed = teamScores.Count();
 
-                leaderboard.Add(leaderboardEntry);
+                leaderboardListByTeam.Add(leaderboardEntry);
 
             }
-            return View(leaderboard.OrderBy(s => s.AgainstPar).ToList());
+
+            var leaderboardListByInstitution = new List<LeaderboardEntryViewModel>();
+            foreach(string institution in game.RegisteredTeams.Select(t => t.Institution).Distinct().AsEnumerable())
+            {
+                var leaderboardEntry = new LeaderboardEntryViewModel();
+                var teamIdsForInstitution = game.RegisteredTeams.Where(t => t.Institution == institution).Select(t => t.TeamId).ToList();
+                var institutionScores = game.Scores.Where(s => teamIdsForInstitution.Contains(s.TeamId));
+                leaderboardEntry.TeamName = institution;
+                leaderboardEntry.HolesPlayed = institutionScores.Count();
+                leaderboardEntry.TotalScore = institutionScores.Sum(s => s.Score);
+                leaderboardEntry.AgainstPar = institutionScores.Sum(s => s.AgainstPar);
+
+                leaderboardListByInstitution.Add(leaderboardEntry);
+            }
+
+            leaderboard.ByTeams = leaderboardListByTeam.OrderBy(s => s.AgainstPar).ToList();
+            leaderboard.ByInstitutions = leaderboardListByInstitution.OrderBy(s => s.AgainstPar).ToList();
+
+            return View(leaderboard);
         }
     }
 }
