@@ -1,10 +1,9 @@
 ﻿@model BankersCup.Models.AddHoleScoreViewModel
 
 @{
-    ViewBag.Title = "AddHole";
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+    ViewBag.Title = "Add Next Hole";
 }
-
-<h2>AddHole</h2>
 @if (@Model.AllHoleScoresEntered)
 {
     <p>Your round is done my friend.</p>
@@ -19,49 +18,54 @@ using (Html.BeginForm())
         @Html.HiddenFor(model => model.GameId)
         @Html.HiddenFor(model => model.TeamId)
 
-        <div class="form-horizontal">
-            <h4>AddHoleScoreViewModel</h4>
-            <hr />
-            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-            <dl class="dl-horizontal">
-                <dt>
-                    @Html.DisplayNameFor(model => model.HoleNumber)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.HoleNumber)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Distance)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Distance)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.Par)
-                </dt>
-                <dd>
-                    @Html.DisplayFor(model => model.Par)
-                </dd>
-                <dt>
-                    @Html.DisplayNameFor(model => model.AverageScore)
-                </dt>
-                <dd>
-                    @Model.AverageScore.ToString("#.0")
-                </dd>
-            </dl>
-            <div class="form-group">
-                @Html.LabelFor(model => model.TeamScore, htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.TeamScore, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.TeamScore, "", new { @class = "text-danger" })
-                </div>
-            </div>
+    <img class="dialog-section-image" src="~/Content/icon_round_details.png" />
+    <table class="table-dialog-content">
+        <thead>
+            <tr>
+                <td>Hole</td>
+                <td>Par</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.HoleNumber</td>
+                <td>@Model.Par</td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table-dialog-content">
+        <thead>
+            <tr>
+                <td>Distance</td>
+                <td>Avg. Score</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@Model.Distance</td>
+                <td>@Model.AverageScore.ToString("#.0")</td>
+            </tr>
+        </tbody>
+    </table>
+    <table class="table-dialog-content">
+        <thead>
+            <tr>
+                <td>Enter Team Score</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    @Html.EditorFor(model => model.TeamScore, new { htmlAttributes = new { @class = "table-data-entry dialog-text-input" } })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" value="Save Score" class="dark-button table-data-entry" />
+                </td>
+            </tr>
+        </tbody>
+    </table> 
 
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
-                </div>
-            </div>
-        </div>
     }
 }

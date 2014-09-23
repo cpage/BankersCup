@@ -141,15 +141,42 @@
     <Compile Include="RegistrationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\background.jpg" />
+    <Content Include="Content\bg_photo_640.jpg" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\divider_white.png" />
+    <Content Include="Content\header_image.png" />
+    <Content Include="Content\icon_golf_course.png" />
+    <Content Include="Content\icon_leaderboard.png" />
+    <Content Include="Content\icon_menu.png" />
+    <Content Include="Content\icon_round_details.png" />
+    <Content Include="Content\icon_teams.png" />
+    <Content Include="Content\logo_lrg.png" />
+    <Content Include="Content\logo_med.png" />
+    <Content Include="Content\logo_sml.png" />
     <Content Include="favicon.ico" />
+    <Content Include="fonts\font-endzoneslab-bold\assets\bold.svg" />
+    <Content Include="fonts\font-endzoneslab-bold\font-endzoneslab-bold.css" />
+    <Content Include="fonts\font-endzoneslab-light\assets\light.svg" />
+    <Content Include="fonts\font-endzoneslab-light\font-endzoneslab-light.css" />
+    <Content Include="fonts\font-endzoneslab-medium\assets\medium.svg" />
+    <Content Include="fonts\font-endzoneslab-medium\font-endzoneslab-medium.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Data\BankersCup_TeamImport_Template.csv" />
+    <Content Include="fonts\font-endzoneslab-bold\assets\bold.eot" />
+    <Content Include="fonts\font-endzoneslab-bold\assets\bold.ttf" />
+    <Content Include="fonts\font-endzoneslab-bold\assets\bold.woff" />
+    <Content Include="fonts\font-endzoneslab-light\assets\light.eot" />
+    <Content Include="fonts\font-endzoneslab-light\assets\light.ttf" />
+    <Content Include="fonts\font-endzoneslab-light\assets\light.woff" />
+    <Content Include="fonts\font-endzoneslab-medium\assets\medium.eot" />
+    <Content Include="fonts\font-endzoneslab-medium\assets\medium.ttf" />
+    <Content Include="fonts\font-endzoneslab-medium\assets\medium.woff" />
     <None Include="Properties\PublishProfiles\bankerscup.pubxml" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -186,6 +213,9 @@
     <Content Include="Views\Game\Index.cshtml" />
     <Content Include="Views\Admin\PurgeGames.cshtml" />
     <Content Include="Views\Admin\ImportTeams.cshtml" />
+    <Content Include="Views\Admin\Leaderboard.cshtml" />
+    <Content Include="Views\Admin\Authorize.cshtml" />
+    <Content Include="Views\Shared\_HeaderLayout.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

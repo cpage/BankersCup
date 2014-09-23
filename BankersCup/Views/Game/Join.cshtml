@@ -5,28 +5,19 @@
 }
 
 
-<h2>Join</h2>
-
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.Id)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.RegistrationCode, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.RegistrationCode, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.RegistrationCode, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Join" class="btn btn-default" />
-            </div>
-        </div>
+    <div class="join-overlay">
+        <img class="join-logo" src="~/Content/logo_lrg.png" />
+        <p>welcome to</p>
+        <p>the tournament</p>
+        <img class="join-text-divider" src="~/Content/divider_white.png" />
+        <p>enter your</p>
+        <p>registration code</p>
+        @Html.EditorFor(model => model.RegistrationCode, new { htmlAttributes = new { @class = "dialog-text-input table-data-entry" } })
+        <input type="submit" value="Join" class="dark-button table-data-entry" />
     </div>
+    
 }

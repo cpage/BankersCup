@@ -10,5 +10,7 @@ namespace BankersCup.Models
         public string TeamName { get; set; }
         public int TotalScore { get; set; }
         public int AgainstPar { get; set; }
+        public int CurrentHole { get; set; }
+        public int HolesPlayed { get; set; }
     }
 }

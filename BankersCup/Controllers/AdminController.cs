@@ -7,12 +7,30 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Security;
 
 namespace BankersCup.Controllers
 {
     public class AdminController : Controller
     {
-        // GET: Admin
+        
+        public async Task<ActionResult> Authorize()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Authorize(string authCode)
+        {
+            if(authCode == DateTime.Now.ToString("yyyyMMddHHmm"))
+            {
+                FormsAuthentication.SetAuthCookie("admin", false);
+                
+            }
+            return View();
+
+        }
+
         public async Task<ActionResult> Index(int id)
         {
             var game = await DocumentDBRepository.GetGameById(id);
@@ -22,9 +40,9 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Register(int id, int? teamId)
         {
             var game = await DocumentDBRepository.GetGameById(id);
-            
+
             Team teamModel = new Team();
-            
+
             if (teamId == null)
             {
                 teamModel.Players = new List<Player>() { new Player() };
@@ -41,9 +59,9 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Register(int id, Team newTeam)
         {
             var game = await DocumentDBRepository.GetGameById(id);
-            if(newTeam.TeamId == 0)
+            if (newTeam.TeamId == 0)
             {
-                if(game.RegisteredTeams.Count == 0)
+                if (game.RegisteredTeams.Count == 0)
                 {
                     newTeam.TeamId = 1;
                 }
@@ -60,7 +78,7 @@ namespace BankersCup.Controllers
                 currentTeam.TeamName = newTeam.TeamName;
                 currentTeam.StartingHole = newTeam.StartingHole;
                 currentTeam.Players = newTeam.Players;
-                foreach(var player in currentTeam.Players.Where(p => p.IsRemoved).ToList())
+                foreach (var player in currentTeam.Players.Where(p => p.IsRemoved).ToList())
                 {
                     currentTeam.Players.Remove(player);
                 }
@@ -68,14 +86,14 @@ namespace BankersCup.Controllers
 
             await DocumentDBRepository.UpdateGame(game);
 
-            return RedirectToAction("Index", new { id = id } );
+            return RedirectToAction("Index", new { id = id });
         }
 
         public async Task<ActionResult> GenerateSampleGame()
         {
             var allGames = await DocumentDBRepository.GetAllGamesAsync(true);
 
-            
+
             Game game = new Game();
             if (allGames.Count > 0)
                 game.GameId = allGames.Max(g => g.GameId) + 1;
@@ -86,7 +104,7 @@ namespace BankersCup.Controllers
 
             game.Name = "Banker's Cup 2014";
             game.GameDate = DateTime.Now.AddDays(7);
-            
+
 
             game.GameCourse = new Course() { Name = "Glen Abbey" };
 
@@ -165,7 +183,8 @@ namespace BankersCup.Controllers
 
             };
 
-            game.Scores = new List<TeamHoleScore>() {
+            game.Scores = new List<TeamHoleScore>()
+            {
                 //new TeamHoleScore() {
                 //    HoleNumber = 1,
                 //    Score = 3,
@@ -217,11 +236,11 @@ namespace BankersCup.Controllers
         [HttpPost]
         public async Task<ActionResult> PurgeGames(string confirmationCode)
         {
-            if(confirmationCode == DateTime.Now.ToString("yyyyMMddHHmm"))
+            if (confirmationCode == DateTime.Now.ToString("yyyyMMddHHmm"))
             {
 
                 var allGames = await DocumentDBRepository.GetAllGamesAsync(true);
-                foreach(var game in allGames)
+                foreach (var game in allGames)
                 {
                     await DocumentDBRepository.DeleteGame(game.GameId, true);
                 }
@@ -244,16 +263,16 @@ namespace BankersCup.Controllers
         {
             var game = await DocumentDBRepository.GetGameById(id);
 
-            if(importVM.TeamsFile != null)
+            if (importVM.TeamsFile != null)
             {
-                if(game.RegisteredTeams == null)
+                if (game.RegisteredTeams == null)
                 {
                     game.RegisteredTeams = new List<Team>();
                 }
 
-                if(importVM.RemoveExistingTeams)
+                if (importVM.RemoveExistingTeams)
                 {
-                    game.RegisteredTeams.Clear();    
+                    game.RegisteredTeams.Clear();
                 }
 
                 string contents = string.Empty;
@@ -264,7 +283,7 @@ namespace BankersCup.Controllers
 
                 int successfullyCreated = 0;
                 var teamLines = contents.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-                for (int count = 1; count < teamLines.Length; count++ )
+                for (int count = 1; count < teamLines.Length; count++)
                 {
 
                     var teamData = teamLines[count].Split(',');
@@ -309,6 +328,47 @@ namespace BankersCup.Controllers
             }
             return RedirectToAction("Index", new { id = id });
 
+        }
+
+        public async Task<ActionResult> Leaderboard(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            var leaderboard = new List<LeaderboardEntryViewModel>();
+            foreach(var team in game.RegisteredTeams)
+            {
+                var leaderboardEntry = new LeaderboardEntryViewModel();
+                leaderboardEntry.TeamName = team.TeamName;
+                
+                var teamScores = game.Scores.Where(s => s.TeamId == team.TeamId);
+                leaderboardEntry.AgainstPar = teamScores.Sum(s => s.AgainstPar);
+                
+                leaderboardEntry.TotalScore = teamScores.Sum(s => s.Score);
+                int currentHole;
+                if(teamScores.Count() == 0)
+                {
+                    currentHole = team.StartingHole;
+                }
+                else if(teamScores.Count() == 18)
+                {
+                    currentHole = 0;
+                }
+                else
+                {
+                    currentHole = teamScores.Max(s => s.HoleNumber) + 1;
+                }
+
+                if(currentHole > 18)
+                {
+                    currentHole = 1;
+                }
+
+                leaderboardEntry.CurrentHole = currentHole;
+                leaderboardEntry.HolesPlayed = teamScores.Count();
+
+                leaderboard.Add(leaderboardEntry);
+
+            }
+            return View(leaderboard.OrderBy(s => s.AgainstPar).ToList());
         }
     }
 }

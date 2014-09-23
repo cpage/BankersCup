@@ -1,6 +1,5 @@
 ﻿body {
-    padding-top: 50px;
-    padding-bottom: 20px;
+
 }
 
 /* Set padding to keep content from hitting the edges */
@@ -22,3 +21,130 @@ select,
 textarea {
     max-width: 280px;
 }
+
+.content-area {
+    background-image: url("/Content/bg_photo_640.jpg");
+    min-height: 100vh;
+    background-position-x: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.content-section {
+    /*max-width: 630px;*/
+}
+
+.header {
+    background-color: #29AFCB;
+    opacity: 0.9;
+
+}
+
+.header-image {
+    margin: 0 auto;
+    display:block;
+    padding: 10px 0;
+}
+
+.content-dialog {
+    background-color: rgba(255, 255, 255, 0.8);
+    margin: 20px auto;
+    padding: 0 0 20px 0;
+}
+.content-dialog-header {
+    background-color: #25AD5F;
+    padding: 5px;
+    color: white;
+    width: 100%;
+    text-align: center;
+    text-transform: uppercase;
+    font-family: "NFLEndzoneSlabBold";
+    font-size: 12pt;
+}
+
+.content-dialog-body {
+    padding: 0 30px;
+}
+
+.dialog-section-image {
+    display:block;
+    margin: 30px auto 0 auto;
+    width: 100%;
+}
+
+.table-dialog-content {
+    margin: 0 auto;
+    font-size: 12pt;
+    color: #061A27;
+    width: 100%;
+}
+
+.table-dialog-content > thead {
+    font-family: NFLEndzoneSlabMedium;
+}
+
+.table-dialog-content > thead > tr > td,
+.table-dialog-content > tbody > tr > td
+ {
+    width: 50%;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.table-dialog-content > tbody {
+    font-family: NFLEndzoneSlabLight;
+}
+
+.table-data-entry {
+    text-align: center;
+    width: 100%;
+    margin: 10px 0;
+}
+
+.dialog-text-input {
+    border: none;
+    background-color: white;
+    opacity: 1.0;
+    z-index: 5000;
+    padding: 10px;
+    color: #25AD5F;
+}
+
+.dark-button {
+    background-color: #000000;
+    color: white;
+    text-transform: uppercase;
+    border: 0;
+    padding: 10px;
+}
+
+.join-overlay {
+    background-color: rgba(41, 175, 203, 0.9);
+    min-height: 100vh;
+    text-align: center;
+    color: white;
+    text-transform: uppercase;
+    font-family: NFLEndzoneSlabMedium;
+}
+
+.join-logo {
+    display: block;
+    margin: 0 auto;
+    padding: 50px 0;
+    width: 75%;
+}
+
+.join-overlay > p {
+    margin: 0;
+    padding: 0;
+}
+
+.join-text-divider {
+    padding: 20px 0;
+}
+/* header blue: 34aabd*/
+/* body green: 25ad5f*/
+/* icon green: 2dcc6f*/
+/* add grey: 061a27*/
+/* body: f0f1d6*/
+

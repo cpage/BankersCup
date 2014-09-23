@@ -1,0 +1,48 @@
+﻿@model IEnumerable<BankersCup.Models.LeaderboardEntryViewModel>
+
+@{
+    ViewBag.Title = "Leaderboard";
+}
+
+<h2>Leaderboard</h2>
+
+<table class="table">
+    <tr>
+        <th>
+            Team Name
+        </th>
+        <th>
+            Total Score
+        </th>
+        <th>
+            Against Par
+        </th>
+        <th>
+            # Holes Played
+        </th>
+        <th>
+            Current Hole
+        </th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.TeamName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.TotalScore)
+        </td>
+        <td>
+            @item.AgainstPar.ToString("+#;-#;E")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.HolesPlayed)
+        </td>
+        <td>
+            @item.CurrentHole.ToString("#;-#;--")
+        </td>
+    </tr>
+}
+
+</table>

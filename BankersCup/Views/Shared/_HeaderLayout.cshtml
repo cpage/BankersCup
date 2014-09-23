@@ -1,0 +1,28 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="header">
+    <img src="~/Content/logo_sml.png" class="header-image" />
+</div>
+
+
+<div class="container body-content">
+    <div class="content-dialog">
+        <div class="content-dialog-header">
+            @ViewBag.Title
+        </div>
+        <div class="content-dialog-body">
+            @RenderBody()
+        </div>
+    </div>
+
+    @section scripts {
+        @RenderSection("scripts", required: false)
+    }
+    <hr />
+    <footer>
+        <p>&copy; @DateTime.Now.Year - Infusion Development</p>
+    </footer>
+</div>
+
+

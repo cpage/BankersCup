@@ -1,96 +1,42 @@
 ﻿@model BankersCup.Models.GameDetailsViewModel
 
 @{
-    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+    ViewBag.Title = "Game Details";
 }
 
-<h3>Game Details</h3>
-<div>
-    <hr />
-    <div>
-        <h4>Course</h4>
-        <dl class="dl-horizontal">
-            <dt>
-                @Html.DisplayNameFor(model => model.GameCourse.Name)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.GameCourse.Name)
-            </dd>
-            <dt>
-                @Html.DisplayNameFor(model => model.GameCourse.Par)
-            </dt>
-            <dd>
-                @Html.DisplayFor(model => model.GameCourse.Par)
-            </dd>
-        </dl>
-    </div>
+<img class="dialog-section-image" src="~/Content/icon_golf_course.png" />
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td>Course</td>
+            <td>Par</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.GameCourse.Name</td>
+            <td>@Model.GameCourse.Par</td>
+        </tr>
+    </tbody>
+</table>
 
-    <div>
-        <h4>Leaderboard through @Model.HolesPlayed Holes</h4>
-        <table>
-            <thead>
-                <tr>
-                    <td>
-                        Position
-                    </td>
-                    <td>
-                        Team Name
-                    </td>
-                    <td>
-                        Score
-                    </td>
-                </tr>
-            </thead>
-            <tbody>
-                @for (int count = 0; count < Model.Leaderboard.Count; count++)
-                {
-                    <tr>
-                        <td>#@(count + 1)</td>
-                        <td>@Model.Leaderboard[count].TeamName</td>
-                        <td>@Model.Leaderboard[count].AgainstPar.ToString("+#;-#;0")</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-
-    <div>
-        <h4>@Model.CurrentTeam.TeamName</h4>
-        Team Members
-        <ul>
-            @foreach (var p in Model.CurrentTeam.Players)
-            {
-                <li>@p.Name (@p.Company)</li>
-            }
-        </ul>
-
-
-        <p>Current Round:</p>
-        @if (Model.HolesPlayed < Model.GameCourse.Holes.Count)
-        { @Html.ActionLink("Add Next Hole", "AddHole", new { id = Model.GameId });
+<img class="dialog-section-image" src="~/Content/icon_leaderboard.png" />
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td>Team</td>
+            <td>Score</td>
+        </tr>
+    </thead>
+    <tbody>
+        @for (int count = 0; count < Math.Min(Model.Leaderboard.Count, 3); count++)
+        {
+            <tr>
+                @*<td>#@(count + 1)</td>*@
+                <td>@Model.Leaderboard[count].TeamName</td>
+                <td>@Model.Leaderboard[count].AgainstPar.ToString("+#;-#;E")</td>
+            </tr>
         }
-        <table>
-            <thead>
-                <tr>
-                    <td>
-                        Hole
-                    </td>
-                    <td>
-                        Score
-                    </td>
-                    <td></td>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var score in Model.CurrentTeamScores)
-                {
-                    <tr>
-                        <td>@score.HoleNumber</td>
-                        <td>@score.Score (@score.AgainstPar.ToString("+#;-#;E"))</td>
-                        <td>@Html.ActionLink("Edit", "AddHole", new { id = Model.GameId, holeNumber = score.HoleNumber })</td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </div>
-</div>
+    </tbody>
+</table>
