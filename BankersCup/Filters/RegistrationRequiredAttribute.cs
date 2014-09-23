@@ -18,11 +18,10 @@ namespace BankersCup.Filters
         {
             object id;
             filterContext.ActionParameters.TryGetValue("id", out id);
-
             int gameId;
             if(id == null || !Int32.TryParse(id.ToString(), out gameId))
             {
-                return;
+                gameId = 1;
             }
 
             var registeredTeamId = RegistrationHelper.GetRegistrationCookieValue(filterContext.HttpContext, gameId);

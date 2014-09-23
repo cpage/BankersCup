@@ -37,15 +37,15 @@ namespace BankersCup.Controllers
         }
 
         [RegistrationRequired]
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult> Details(int? id)
         {
-
-            var game = await DocumentDBRepository.GetGameById(id);
+            
+            var game = await DocumentDBRepository.GetGameById(id.GetValueOrDefault(1));
 
             var currentTeamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
 
             GameDetailsViewModel vm = new GameDetailsViewModel();
-            vm.GameId = id;
+            vm.GameId = game.GameId;
             vm.GameCourse = game.GameCourse;
             vm.CurrentTeamScores = game.Scores.Where(s => s.TeamId == currentTeamId).ToList();
             vm.HolesPlayed = calculateHolesPlayedForCurrentTeam(game);
