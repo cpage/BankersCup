@@ -155,6 +155,7 @@
     <Content Include="Content\bootstrap.min.css">
       <DependentUpon>bootstrap.css</DependentUpon>
     </Content>
+    <Content Include="Content\divider_green.png" />
     <Content Include="Content\divider_white.png" />
     <Content Include="Content\header_image.png" />
     <Content Include="Content\icon_edit.png" />
