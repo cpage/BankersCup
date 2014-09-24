@@ -43,7 +43,9 @@
         @RenderSection("scripts", required: false)
     }
     <footer>
+        @if (ViewBag.ShowAd == null || ViewBag.ShowAd) { 
         <a href="@Url.Action("Contact", new { id = ViewBag.GameId, topic = "Cloud" })"><img class="footer-ad" src="~/Content/ad_1.png" /></a>
+        }
     </footer>
 </div>
 

@@ -310,3 +310,8 @@ a,a:visited,a:active,a:hover {
 .button-row > a:last-of-type > input {
     float: right;
 }
+
+.dark-text, .dark-text:hover {
+    color: #000;
+    text-decoration: underline;
+}

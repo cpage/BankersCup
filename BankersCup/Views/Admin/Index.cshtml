@@ -1,13 +1,14 @@
 ﻿@model BankersCup.Models.Game
 
 @{
-    ViewBag.Title = "Index";
+    ViewBag.Title = "Teams Registered for " + Model.Name;
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
 }
 
 <h2>Registration for @Model.Name</h2>
 
 <p>
-    @Html.ActionLink("Register New Team", "Register", new { id = Model.GameId } ) | @Html.ActionLink("Import Teams", "ImportTeams", new { id = Model.GameId })
+    @Html.ActionLink("Register New Team", "Register", new { id = Model.GameId }, new { @class = "dark-text" }) | @Html.ActionLink("Import Teams", "ImportTeams", new { id = Model.GameId }, new { @class = "dark-text" })
 </p>
 <table class="table">
     <tr>
@@ -28,7 +29,7 @@
 @foreach (var item in Model.RegisteredTeams) {
     <tr>
         <td>
-            @Html.ActionLink(item.TeamName, "Register", new {id = Model.GameId, teamId = item.TeamId})
+            @Html.ActionLink(item.TeamName, "Register", new { id = Model.GameId, teamId = item.TeamId }, new { @class = "dark-text" })
         </td>
         <td>
             @foreach (var p in item.Players)

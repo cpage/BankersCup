@@ -14,6 +14,10 @@ namespace BankersCup.Controllers
     public class AdminController : Controller
     {
         
+        public AdminController() : base()
+        {
+            ViewBag.ShowAd = false;
+        }
         public async Task<ActionResult> Authorize()
         {
             return View();
@@ -34,12 +38,14 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Index(int id)
         {
             var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
             return View(game);
         }
 
         public async Task<ActionResult> Register(int id, int? teamId)
         {
             var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
 
             Team teamModel = new Team();
 
@@ -59,6 +65,8 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Register(int id, Team newTeam)
         {
             var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
             if (newTeam.TeamId == 0)
             {
                 if (game.RegisteredTeams.Count == 0)
@@ -262,6 +270,7 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> ImportTeams(int id, ImportTeamsViewModel importVM)
         {
             var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
 
             if (importVM.TeamsFile != null)
             {
@@ -335,6 +344,7 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Leaderboard(int id)
         {
             var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
 
             var leaderboard = new AdminLeaderboardViewModel();
             leaderboard.ByTeams = new List<LeaderboardEntryViewModel>();
@@ -398,6 +408,7 @@ namespace BankersCup.Controllers
 
         public async Task<ActionResult> Contacts()
         {
+            ViewBag.GameId = 1;
             List<ContactDetails> contacts = await DocumentDBRepository.GetAllContactsAsync();
             return View(contacts);
         }
