@@ -45,10 +45,20 @@ a,a:visited,a:active,a:hover {
 
 }
 
+.logo-bar {
+    background-color: rgba(0, 0, 0, 0.9);
+    padding: 5px;
+}
+
+.logo-bar > img {
+    margin: 0 auto;
+    display:block;
+}
+
 .header-image {
     margin: 0 auto;
     display:block;
-    padding: 25px 0;
+    padding: 10px 0 5px 0;
 }
 
 .menu-img {
@@ -112,16 +122,17 @@ a,a:visited,a:active,a:hover {
 }
 
 .leaderboard-table-position {
-    width: 20% !important;
+    width: 15% !important;
     text-align: right !important;
 }
 
 .leaderboard-table-team {
-    width: 40% !important;
+    width: 70% !important;
 }
 
 .leaderboard-table-score {
-    width: 40% !important;
+    width: 15% !important;
+    text-align: right !important;
 }
 
 .current-team {
@@ -154,6 +165,9 @@ a,a:visited,a:active,a:hover {
     padding: 10px;
 }
 
+.dark-button-2col {
+    width: 45%;
+}
 .add-hole-button {
     background-color: #25AD5F;
     color: white;
@@ -164,27 +178,72 @@ a,a:visited,a:active,a:hover {
     
     display:block;
 }
-.join-overlay {
+
+.score-dropdown {
+    color: #25AD5F;
+    min-width: 165px;
+    text-align: center;
+    border: none;
+    padding: 5px 80px;
+    -webkit-appearance: none;
+    -moz-appearance: none;    
+}
+
+
+.score-dropdown::-ms-expand {
+    display: none;
+}
+
+.join-overlay-top {
+    background-color: rgba(44, 60, 80,0.9);
+    height: 60vh;
+}
+.join-overlay-bottom {
     background-color: rgba(41, 175, 203, 0.9);
-    min-height: 100vh;
     text-align: center;
     color: white;
     text-transform: uppercase;
     font-family: NFLEndzoneSlabMedium;
+    padding-top: 25px;
+    height: 40vh;
 }
 
 .join-logo {
     display: block;
     margin: 0 auto;
-    padding: 50px 0;
+    padding: 30px 0 50px 0;
     width: 75%;
 }
 
-.join-overlay > p {
+.presents-img {
+    display:block;
+    margin: 0 auto;
+    width: 60%;
+}
+
+.company-logos {
+    display:block;
+    padding: 20px 0 50px 0;
+    width: 75%;
+    margin: 0 auto;
+}
+
+.company-logos > img {
+    padding: 10px;
+}
+.join-overlay-bottom > p {
     margin: 0;
     padding: 0;
 }
 
+.join-overlay-bottom > input[type=submit] {
+    background-color: #2C3C50;
+    color: white;
+}
+
+.join-button {
+
+}
 .join-text-divider {
     padding: 20px 0;
 }

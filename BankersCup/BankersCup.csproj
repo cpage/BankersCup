@@ -161,6 +161,7 @@
     <Content Include="Content\icon_menu.png" />
     <Content Include="Content\icon_round_details.png" />
     <Content Include="Content\icon_teams.png" />
+    <Content Include="Content\logos_small.png" />
     <Content Include="Content\logo_infusion.png" />
     <Content Include="Content\logo_lrg.png" />
     <Content Include="Content\logo_med.png" />

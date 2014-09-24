@@ -19,6 +19,7 @@ using (Html.BeginForm())
         @Html.HiddenFor(model => model.GameId)
         @Html.HiddenFor(model => model.TeamId)
         @Html.HiddenFor(model => model.NextHoleAfterSave)
+        @Html.HiddenFor(model => model.PreviousHoleAfterSave)
 
     <img class="dialog-section-image" src="~/Content/icon_round_details.png" />
     <table class="table-dialog-content">
@@ -62,12 +63,13 @@ using (Html.BeginForm())
         <tbody>
             <tr>
                 <td>
-                    @Html.EditorFor(model => model.TeamScore, new { htmlAttributes = new { @class = "table-data-entry dialog-text-input", autofocus=true } })
+                    @Html.DropDownListFor(model => model.TeamScore, new SelectList(Enumerable.Range(1, 8)), new { @class = "score-dropdown" })
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input id="saveNext" type="submit" value="Next Score" class="dark-button table-data-entry" />
+                    <input id="savePrevious" type="submit" value="Previous" class="dark-button dark-button-2col table-data-entry" />
+                    <input id="saveNext" type="submit" value="Next" class="dark-button dark-button-2col table-data-entry" />
                 </td>
             </tr>
         </tbody>
@@ -82,6 +84,9 @@ using (Html.BeginForm())
             $("#TeamScore").select();
             $("#saveNext").click(function () {
                 $("#NextHoleAfterSave").val("True");
+            });
+            $("#savePrevious").click(function () {
+                $("#PreviousHoleAfterSave").val("True");
             });
         })
 

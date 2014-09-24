@@ -16,5 +16,6 @@ namespace BankersCup.Models
         public double AverageScore { get; set; }
         public bool AllHoleScoresEntered { get; set; }
         public bool NextHoleAfterSave { get; set; }
+        public bool PreviousHoleAfterSave { get; set; }
     }
 }

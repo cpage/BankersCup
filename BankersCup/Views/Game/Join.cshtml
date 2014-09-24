@@ -9,15 +9,20 @@
 {
     @Html.AntiForgeryToken()
 
-    <div class="join-overlay">
+    <div class="join-overlay-top">
         <img class="join-logo" src="~/Content/logo_lrg.png" />
-        <p>welcome to</p>
-        <p>the tournament</p>
-        <img class="join-text-divider" src="~/Content/divider_white.png" />
+        <img class="presents-img" src="~/Content/banner_text.png" />
+        <img class="company-logos" src="~/Content/logos_small.png" />
+        @*<div class="company-logos">
+                <img class="company-logo" src="~/Content/logo_msft.png" />
+                <img class="company-logo" src="~/Content/logo_infusion.png" />
+            </div>*@
+    </div>
+    <div class="join-overlay-bottom">
         <p>enter your</p>
         <p>registration code</p>
         @Html.EditorFor(model => model.RegistrationCode, new { htmlAttributes = new { @class = "dialog-text-input table-data-entry", autofocus = true } })
         <input type="submit" value="Join" class="dark-button table-data-entry" />
     </div>
-    
+
 }

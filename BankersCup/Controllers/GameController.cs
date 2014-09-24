@@ -232,11 +232,39 @@ namespace BankersCup.Controllers
 
             score.Score = newScore.TeamScore;
             score.AgainstPar = newScore.TeamScore - newScore.Par;
-            
+
+            string action = "Details";
+            dynamic actionParams;
+
+            if(newScore.NextHoleAfterSave || newScore.PreviousHoleAfterSave)
+            {
+                action = "AddHole";
+
+                int nextHole = newScore.HoleNumber;
+                if (newScore.NextHoleAfterSave)
+                {
+                    if (++nextHole > 18)
+                    {
+                        nextHole = 1;
+                    }
+                }
+                if (newScore.PreviousHoleAfterSave)
+                {
+                    if (--nextHole < 1)
+                    {
+                        nextHole = 18;
+                    }
+                }
+                actionParams = new { id = newScore.GameId, holeNumber = nextHole };
+            }
+            else
+            {
+                actionParams = new { id = newScore.GameId };
+            }
 
             await DocumentDBRepository.UpdateGame(game);
             
-            return RedirectToAction(newScore.NextHoleAfterSave ? "AddHole" : "Details", new { id = newScore.GameId });
+            return RedirectToAction(action, actionParams);
             
 
         }
