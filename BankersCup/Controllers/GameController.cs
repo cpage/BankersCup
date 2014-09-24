@@ -197,7 +197,7 @@ namespace BankersCup.Controllers
                 }
                 else
                 {
-                    currentHole = ++teamScores.Last().HoleNumber;
+                    currentHole = teamScores.Last().HoleNumber + 1;
                 }
 
                 if (currentHole == 19)
@@ -366,7 +366,7 @@ namespace BankersCup.Controllers
 
         }
 
-        private List<LeaderboardEntryViewModel> calculateLeaderboardBasedOnCurrentTeam(Game currentGame)
+        private List<LeaderboardEntryViewModel> calculateLeaderboardBasedOnCurrentTeam(Game currentGame, bool includeTeamsWithNoScores = false)
         {
             var leaderboard = new List<LeaderboardEntryViewModel>();
             foreach (var team in currentGame.RegisteredTeams)
@@ -376,6 +376,11 @@ namespace BankersCup.Controllers
                 int holesPlayed = calculateHolesPlayedForCurrentTeam(currentGame);
 
                 var teamScores = currentGame.Scores.Where(s => s.TeamId == team.TeamId).Take(holesPlayed);
+                if(teamScores.Count() == 0)
+                {
+                    continue;
+                }
+
                 leaderboardEntry.AgainstPar = teamScores.Sum(s => s.AgainstPar);
 
                 leaderboardEntry.TotalScore = teamScores.Sum(s => s.Score);
