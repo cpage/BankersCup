@@ -3,7 +3,7 @@
 @{
     Layout = "~/Views/Shared/_HeaderLayout.cshtml";
     ViewBag.Title = "Add Score";
-    ViewBag.CloseUrl = Url.Action("Scorecard", "Game", new { id = ViewBag.GameId });
+    //ViewBag.CloseUrl = Url.Action("Scorecard", "Game", new { id = ViewBag.GameId });
 }
 @if (@Model.AllHoleScoresEntered)
 {
@@ -21,35 +21,19 @@ using (Html.BeginForm())
         @Html.HiddenFor(model => model.NextHoleAfterSave)
         @Html.HiddenFor(model => model.PreviousHoleAfterSave)
 
-    <img class="dialog-section-image" src="~/Content/icon_round_details.png" />
+    @*<img class="dialog-section-image" src="~/Content/icon_round_details.png" />*@
     <table class="table-dialog-content">
         <thead>
             <tr>
                 <td>Hole</td>
-                <td></td>
                 <td>Par</td>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>@Model.HoleNumber</td>
-                <td></td>
-                <td>@Model.Par</td>
-            </tr>
-        </tbody>
-    </table>
-    <table class="table-dialog-content">
-        <thead>
-            <tr>
-                <td>Distance</td>
-                <td></td>
                 <td>Avg. Score</td>
             </tr>
         </thead>
         <tbody>
             <tr>
-                <td>@Model.Distance</td>
-                <td></td>
+                <td>@Model.HoleNumber</td>
+                <td>@Model.Par</td>
                 <td>@Model.AverageScore.ToString("0.0")</td>
             </tr>
         </tbody>

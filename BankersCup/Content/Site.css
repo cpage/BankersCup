@@ -197,6 +197,8 @@ a,a:visited,a:active,a:hover {
 .join-overlay-top {
     background-color: rgba(44, 60, 80,0.9);
     height: 60vh;
+    color: white;
+    font-family: NFLEndzoneSlabLight;
 }
 .join-overlay-bottom {
     background-color: rgba(41, 175, 203, 0.9);
@@ -223,14 +225,35 @@ a,a:visited,a:active,a:hover {
 
 .company-logos {
     display:block;
-    padding: 20px 0 50px 0;
+    padding: 20px 0 1px 0;
     width: 75%;
     margin: 0 auto;
+}
+
+
+.powered-by-container {
+    padding-top: 20px;
+    width: 40%;
+    margin: 0 auto;
+    font-size: 6pt;
+}
+
+.powered-by-container > span {
+    padding-top: 5px;
+    padding-right: 10px;
+    text-transform: uppercase
+}
+
+.powered-by-logo {
+    display: inline-block;
+    width: 50%;
 }
 
 .company-logos > img {
     padding: 10px;
 }
+
+
 .join-overlay-bottom > p {
     margin: 0;
     padding: 0;

@@ -147,6 +147,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\ad_1.png" />
+    <Content Include="Content\azure-logo.png" />
     <Content Include="Content\background.jpg" />
     <Content Include="Content\banner_no_text.png" />
     <Content Include="Content\banner_text.png" />
