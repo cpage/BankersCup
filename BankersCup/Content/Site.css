@@ -119,6 +119,7 @@ a,a:visited,a:active,a:hover {
     width: 33%;
     text-align: center;
     text-transform: uppercase;
+    vertical-align: bottom;
 }
 
 .leaderboard-table-position {
