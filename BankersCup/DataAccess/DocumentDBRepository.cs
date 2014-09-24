@@ -143,20 +143,25 @@ namespace BankersCup.DataAccess
             }
 
             //return await Task<List<Game>>.Run(() => new List<Game>() { localGame });
-            return await Task<List<Game>>.Run(() => Client.CreateDocumentQuery<Game>(Collection.DocumentsLink, sql).AsEnumerable().ToList());
+            return await Task<List<Game>>.Run(() => Client.CreateDocumentQuery<Game>(GameCollection.DocumentsLink, sql).AsEnumerable().ToList());
             
+        }
+
+        public static async Task<List<ContactDetails>> GetAllContactsAsync()
+        {
+            return await Task<List<ContactDetails>>.Run(() => Client.CreateDocumentQuery<ContactDetails>(ContactCollection.DocumentsLink).AsEnumerable().ToList());
         }
 
         public static async Task<Game> GetGameById(int gameId)
         {
-            return await Task<Game>.Run(() => Client.CreateDocumentQuery<Game>(Collection.DocumentsLink).Where(g => g.GameId == gameId).AsEnumerable().FirstOrDefault());
+            return await Task<Game>.Run(() => Client.CreateDocumentQuery<Game>(GameCollection.DocumentsLink).Where(g => g.GameId == gameId).AsEnumerable().FirstOrDefault());
             //return await Task<Game>.Run(() => localGame);
 
         }
 
         public static async Task<Document> CreateGame(Game newGame)
         {
-            return await Client.CreateDocumentAsync(Collection.DocumentsLink, newGame);
+            return await Client.CreateDocumentAsync(GameCollection.DocumentsLink, newGame);
         }
 
         public static async Task<Document> UpdateGame(Game game)
@@ -181,6 +186,10 @@ namespace BankersCup.DataAccess
             return await Client.DeleteDocumentAsync(game.SelfLink);
         }
 
+        public static async Task<Document> CreateContact(ContactDetails details)
+        {
+            return await Client.CreateDocumentAsync(ContactCollection.DocumentsLink, details);
+        }
         private static Database database;
         private static Database Database
         {
@@ -195,17 +204,31 @@ namespace BankersCup.DataAccess
             }
         }
 
-        private static DocumentCollection collection;
-        private static DocumentCollection Collection
+        private static DocumentCollection gameCollection;
+        private static DocumentCollection GameCollection
         {
             get
             {
-                if (collection == null)
+                if (gameCollection == null)
                 {
-                    ReadOrCreateCollection(Database.SelfLink).Wait();
+                    ReadOrCreateGameCollection(Database.SelfLink).Wait();
                 }
 
-                return collection;
+                return gameCollection;
+            }
+        }
+
+        private static DocumentCollection contactCollection;
+        private static DocumentCollection ContactCollection
+        {
+            get
+            {
+                if (contactCollection == null)
+                {
+                    ReadOrCreateContactCollection(Database.SelfLink).Wait();
+                }
+
+                return contactCollection;
             }
         }
 
@@ -223,17 +246,31 @@ namespace BankersCup.DataAccess
             }
         }
 
-        private static string collectionId;
-        private static String CollectionId
+        private static string gameCollectionId;
+        private static String GameCollectionId
         {
             get
             {
-                if (string.IsNullOrEmpty(collectionId))
+                if (string.IsNullOrEmpty(gameCollectionId))
                 {
-                    collectionId = ConfigurationManager.AppSettings["documentDB.gameCollection"];
+                    gameCollectionId = ConfigurationManager.AppSettings["documentDB.gameCollection"];
                 }
 
-                return collectionId;
+                return gameCollectionId;
+            }
+        }
+
+        private static string contactCollectionId;
+        private static String ContactCollectionId
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(contactCollectionId))
+                {
+                    contactCollectionId = ConfigurationManager.AppSettings["documentDB.contactCollection"];
+                }
+
+                return contactCollectionId;
             }
         }
 
@@ -256,19 +293,35 @@ namespace BankersCup.DataAccess
             }
         }
 
-        private static async Task ReadOrCreateCollection(string databaseLink)
+        private static async Task ReadOrCreateGameCollection(string databaseLink)
         {
             var collections = Client.CreateDocumentCollectionQuery(databaseLink)
-                              .Where(col => col.Id == CollectionId).ToArray();
+                              .Where(col => col.Id == GameCollectionId).ToArray();
 
             if (collections.Any())
             {
-                collection = collections.First();
+                gameCollection = collections.First();
             }
             else
             {
-                collection = await Client.CreateDocumentCollectionAsync(databaseLink,
-                    new DocumentCollection { Id = CollectionId });
+                gameCollection = await Client.CreateDocumentCollectionAsync(databaseLink,
+                    new DocumentCollection { Id = GameCollectionId });
+            }
+        }
+
+        private static async Task ReadOrCreateContactCollection(string databaseLink)
+        {
+            var collections = Client.CreateDocumentCollectionQuery(databaseLink)
+                              .Where(col => col.Id == ContactCollectionId).ToArray();
+
+            if (collections.Any())
+            {
+                contactCollection = collections.First();
+            }
+            else
+            {
+                contactCollection = await Client.CreateDocumentCollectionAsync(databaseLink,
+                    new DocumentCollection { Id = ContactCollectionId });
             }
         }
 
@@ -287,6 +340,7 @@ namespace BankersCup.DataAccess
                 database = await Client.CreateDatabaseAsync(database);
             }
         }
+
 
     }
 }

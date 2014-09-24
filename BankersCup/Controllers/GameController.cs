@@ -67,6 +67,7 @@ namespace BankersCup.Controllers
 
         // POST: Game/Create
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Create(FormCollection collection)
         {
             try
@@ -89,6 +90,7 @@ namespace BankersCup.Controllers
 
         // POST: Game/Edit/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Edit(int id, FormCollection collection)
         {
             try
@@ -113,6 +115,7 @@ namespace BankersCup.Controllers
 
         // POST: Game/Delete/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Delete(int id, FormCollection collection)
         {
             try
@@ -135,6 +138,7 @@ namespace BankersCup.Controllers
         }
 
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> Join(JoinGameViewModel joinModel)
         {
             // get game and validate if the registration code exists
@@ -215,6 +219,7 @@ namespace BankersCup.Controllers
 
         [HttpPost]
         [RegistrationRequired]
+        [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddHole(AddHoleScoreViewModel newScore)
         {
             var game = await DocumentDBRepository.GetGameById(newScore.GameId);
@@ -295,6 +300,46 @@ namespace BankersCup.Controllers
             vm.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId));
             vm.HoleScores = game.Scores.Where(s => s.TeamId == vm.CurrentTeam.TeamId).ToList();
             return View(vm);
+        }
+
+        [RegistrationRequired]
+        public async Task<ActionResult> Contact(int id, string topic)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
+            var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id));
+
+            ContactDetailsViewModel contactDetails = new ContactDetailsViewModel();
+            contactDetails.CurrentTeam = team;
+            contactDetails.Topic = topic;
+            
+            return View(contactDetails);
+        }
+
+        [RegistrationRequired]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> Contact(int id, ContactDetailsViewModel details)
+        {
+            if(!ModelState.IsValid)
+            {
+                return View(details);
+            }
+
+            var game = await DocumentDBRepository.GetGameById(id);
+
+            var contact = new ContactDetails();
+            contact.Name = details.Name;
+            contact.Email = details.Email;
+            contact.Company = details.Company;
+            contact.Consent = details.Consent;
+            contact.DateCreated = DateTime.Now;
+            contact.EventName = game.Name;
+            
+            await DocumentDBRepository.CreateContact(contact);
+
+            return RedirectToAction("Details", "Game", new { id = id });
         }
 
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)

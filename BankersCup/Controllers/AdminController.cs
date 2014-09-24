@@ -394,5 +394,11 @@ namespace BankersCup.Controllers
 
             return View(leaderboard);
         }
+
+        public async Task<ActionResult> Contacts()
+        {
+            List<ContactDetails> contacts = await DocumentDBRepository.GetAllContactsAsync();
+            return View(contacts);
+        }
     }
 }

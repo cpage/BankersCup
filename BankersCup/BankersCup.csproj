@@ -125,6 +125,8 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddHoleScoreViewModel.cs" />
+    <Compile Include="Models\ContactDetails.cs" />
+    <Compile Include="Models\ContactDetailsViewModel.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\Game.cs" />
     <Compile Include="Models\GameDetailsViewModel.cs" />
@@ -233,9 +235,13 @@
     <Content Include="Views\Shared\_HeaderLayout.cshtml" />
     <Content Include="Views\Game\Leaderboard.cshtml" />
     <Content Include="Views\Game\Scorecard.cshtml" />
+    <Content Include="Views\Game\Contact.cshtml" />
+    <Content Include="Views\Game\Test.cshtml" />
+    <Content Include="Views\Admin\Contacts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Contact\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
