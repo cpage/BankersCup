@@ -130,6 +130,20 @@ namespace BankersCup.Controllers
             }
         }
 
+        [RegistrationRequired]
+        public async Task<ActionResult> MyTeam(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+            var currentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id));
+            var details = new GameDetailsViewModel();
+            details.GameId = id;
+            details.CurrentTeam = currentTeam;
+            details.GameCourse = game.GameCourse;
+
+            return View(details);
+        }
+
         public async Task<ActionResult> Join(int id)
         {
             // get game here
@@ -149,7 +163,7 @@ namespace BankersCup.Controllers
             if(team != null)
             {
                 RegistrationHelper.SetRegistrationCookie(this.HttpContext, joinModel.Id, team.TeamId);
-                return RedirectToAction("Details", new { Id = joinModel.Id } );
+                return RedirectToAction("MyTeam", new { Id = joinModel.Id } );
             }
 
             return View(joinModel);

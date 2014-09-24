@@ -273,6 +273,7 @@ namespace BankersCup.Controllers
                 if (importVM.RemoveExistingTeams)
                 {
                     game.RegisteredTeams.Clear();
+                    game.Scores.Clear();
                 }
 
                 string contents = string.Empty;
@@ -321,7 +322,7 @@ namespace BankersCup.Controllers
                     successfullyCreated++;
                 }
 
-
+                
                 await DocumentDBRepository.UpdateGame(game);
 
                 importVM.Message = string.Format("{0} teams successfully created.", successfullyCreated);

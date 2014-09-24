@@ -1,0 +1,62 @@
+﻿@model BankersCup.Models.GameDetailsViewModel
+
+@{
+    ViewBag.Title = "Team: " + Model.CurrentTeam.TeamName;
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+}
+
+@Html.HiddenFor(model => model.GameId)
+
+<img class="dialog-section-image" src="~/Content/icon_golf_course.png" />
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td>Course</td>
+            <td>Par</td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>@Model.GameCourse.Name</td>
+            <td>@Model.GameCourse.Par</td>
+        </tr>
+    </tbody>
+</table>
+
+<img class="dialog-section-image" src="~/Content/icon_teams.png" />
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td>Player</td>
+            <td>Company</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var player in Model.CurrentTeam.Players) { 
+        <tr>
+            <td class="smaller-text">@player.Name</td>
+            <td class="smaller-text">@player.Company</td>
+        </tr>
+        }
+    </tbody>
+</table>
+
+<div class="button-row">
+    <a href="@Url.Action("Join", "Game", new { id = ViewBag.GameId })"><input type=button id="NotMeBtn" value="Not Me" class="dark-button dark-button-2col" /></a>
+    <a href="@Url.Action("Details", "Game", new { id = ViewBag.GameId })"><input type=button id="NotMeBtn" value="Continue >" class="dark-button dark-button-2col" /></a>
+</div>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $("#NotMeBtn").click(function () {
+                clearRegistration();
+            });
+        });
+
+        function clearRegistration() {
+            var cookieName = "GameRegistration" + $("#GameId").val();
+            $.removeCookie(cookieName, { path: '/' });
+        }
+    </script>
+    }

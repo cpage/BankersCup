@@ -278,7 +278,7 @@ a,a:visited,a:active,a:hover {
     bottom: 0px;
     left: 0px;
 }
-/* header blue: 34aabd*/
+/* header blue: 34aabd*/j
 /* body green: 25ad5f*/
 /* icon green: 2dcc6f*/
 /* add grey: 061a27*/
@@ -296,4 +296,17 @@ a,a:visited,a:active,a:hover {
 
 .scorecard-score {
     padding-right: 10px;
+}
+
+.smaller-text {
+    font-size: 10pt;
+}
+
+.button-row {
+    width: 100%;
+    margin: 0 auto;
+}
+
+.button-row > a:last-of-type > input {
+    float: right;
 }
