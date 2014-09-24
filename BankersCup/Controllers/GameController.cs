@@ -333,6 +333,7 @@ namespace BankersCup.Controllers
             contact.Name = details.Name;
             contact.Email = details.Email;
             contact.Company = details.Company;
+            contact.Topic = details.Topic;
             contact.Consent = details.Consent;
             contact.DateCreated = DateTime.Now;
             contact.EventName = game.Name;
