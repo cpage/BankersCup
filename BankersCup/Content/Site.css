@@ -26,6 +26,7 @@ a,a:visited,a:active,a:hover {
     text-decoration: none;
     color: white;
 }
+
 .content-area {
     background-image: url("/Content/bg_photo_640.jpg");
     min-height: 100vh;
@@ -323,7 +324,7 @@ a,a:visited,a:active,a:hover {
     float: right;
 }
 
-.dark-text, .dark-text:hover {
+.dark-text, .dark-text:hover, .dark-text:active, .dark-text:visited {
     color: #000;
     text-decoration: underline;
 }
@@ -341,4 +342,12 @@ a,a:visited,a:active,a:hover {
     margin-left: 15px !important;
     margin-top: -55px !important;
     float: left;
+}
+
+#leaderboardByTeams > tbody > tr > th,
+#leaderboardByTeams > tbody > tr > td,
+#leaderboardByInstitutions > tbody > tr > th,
+#leaderboardByInstitutions > tbody > tr > td
+{
+    text-align: center;
 }

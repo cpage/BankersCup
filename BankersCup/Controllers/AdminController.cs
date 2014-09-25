@@ -87,6 +87,7 @@ namespace BankersCup.Controllers
             {
                 var currentTeam = game.RegisteredTeams.First(t => t.TeamId == newTeam.TeamId);
                 currentTeam.TeamName = newTeam.TeamName;
+                currentTeam.RegistrationCode = newTeam.RegistrationCode;
                 currentTeam.StartingHole = newTeam.StartingHole;
                 currentTeam.Players = newTeam.Players;
                 foreach (var player in currentTeam.Players.Where(p => p.IsRemoved).ToList())
