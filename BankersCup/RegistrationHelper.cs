@@ -12,7 +12,9 @@ namespace BankersCup
 
         public static void SetRegistrationCookie(HttpContextBase context, int gameId, int teamId)
         {
-            context.Response.SetCookie(new HttpCookie(string.Format(registrationCookieName, gameId), teamId.ToString()));
+            var cookie = new HttpCookie(string.Format(registrationCookieName, gameId), teamId.ToString());
+            cookie.Expires = DateTime.Now.AddDays(180);
+            context.Response.SetCookie(cookie);
         }
 
         public static int GetRegistrationCookieValue(HttpContextBase context, int gameId)

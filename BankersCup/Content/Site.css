@@ -101,12 +101,12 @@ a,a:visited,a:active,a:hover {
 }
 .dialog-section-image {
     display:block;
-    margin: 30px auto;
+    margin: 15px auto 5px auto;
     width: 100%;
 }
 
 .table-dialog-content {
-    margin: 20px auto;
+    margin: 10px auto 20px auto;
     font-size: 12pt;
     color: #061A27;
     width: 100%;
@@ -169,6 +169,14 @@ a,a:visited,a:active,a:hover {
     padding: 10px;
 }
 
+.green-button {
+    background-color: #25AD5F;
+    color: white;
+    text-transform: uppercase;
+    border: 0;
+    padding: 10px;
+}
+
 .dark-button-2col {
     width: 45%;
 }
@@ -182,6 +190,7 @@ a,a:visited,a:active,a:hover {
     
     display:block;
 }
+
 
 .score-dropdown {
     color: #25AD5F;
