@@ -74,7 +74,7 @@ a,a:visited,a:active,a:hover {
 }
 .content-dialog-header {
     background-color: #25AD5F;
-    padding: 15px 0;
+    padding: 15px 5px;
     color: white;
     width: 100%;
     text-align: center;
@@ -85,6 +85,9 @@ a,a:visited,a:active,a:hover {
 
 .content-dialog-body {
     padding: 0 30px;
+    font-family: NFLEndzoneSlabLight;
+    color: #061A27;
+    text-transform: uppercase;
 }
 
 .content-dialog-title {
@@ -314,4 +317,19 @@ a,a:visited,a:active,a:hover {
 .dark-text, .dark-text:hover {
     color: #000;
     text-decoration: underline;
+}
+
+.iam-text {
+    padding-top: 10px;
+    font-family: NFLEndzoneSlabBold;
+}
+
+.consent-label {
+    margin-left: 20px;
+}
+
+.consent-checkbox {
+    margin-left: 15px !important;
+    margin-top: -55px !important;
+    float: left;
 }

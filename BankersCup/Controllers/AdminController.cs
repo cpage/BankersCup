@@ -1,4 +1,5 @@
 ﻿using BankersCup.DataAccess;
+using BankersCup.Filters;
 using BankersCup.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,7 @@ using System.Web.Security;
 
 namespace BankersCup.Controllers
 {
+    [AdminAccessRequired]
     public class AdminController : Controller
     {
         
@@ -26,11 +28,12 @@ namespace BankersCup.Controllers
         [HttpPost]
         public async Task<ActionResult> Authorize(string authCode)
         {
-            if(authCode == DateTime.Now.ToString("yyyyMMddHHmm"))
+            if(authCode == DateTime.Now.ToString("yyyyMMdd"))
             {
-                FormsAuthentication.SetAuthCookie("admin", false);
-                
+                this.HttpContext.Response.SetCookie(new HttpCookie("AdminAccess", DateTime.Now.ToString("yyyyMMdd")));
+                return RedirectToAction("Index", new { id = 1 });
             }
+
             return View();
 
         }

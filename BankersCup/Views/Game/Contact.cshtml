@@ -1,16 +1,17 @@
 ﻿@model BankersCup.Models.ContactDetailsViewModel
 
 @{
-    ViewBag.Title = "Contact";
+    ViewBag.Title = "Let's talk about " + Model.Topic;
     Layout = "~/Views/Shared/_HeaderLayout.cshtml";
 }
 
+<p class="iam-text">I Am...</p>
 
 @{int count = 0;}
 @foreach(var player in Model.CurrentTeam.Players)
 {
     <p>
-    @Html.RadioButtonFor(model => player.Name, count++, new { @class = "radio_contact" }) @player.Name
+    @Html.RadioButtonFor(model => player.Name, count++, new { @class = "radio_contact" }) @player.Name (@player.Company)
     </p>
 }
 
@@ -20,23 +21,18 @@
 
     @Html.HiddenFor(model => model.GameId)
     @Html.HiddenFor(model => model.EventName)
+    @Html.HiddenFor(model => model.Name)
+    @Html.HiddenFor(model => model.Company)
+    @Html.HiddenFor(model => model.Topic)
     @Html.Hidden("player0_name", Model.CurrentTeam.Players[0].Name)
     @Html.Hidden("player0_company", Model.CurrentTeam.Players[0].Company)
     @Html.Hidden("player0_email", Model.CurrentTeam.Players[0].Email)
     @Html.Hidden("player1_name", Model.CurrentTeam.Players[1].Name)
     @Html.Hidden("player1_company", Model.CurrentTeam.Players[1].Company)
     @Html.Hidden("player1_email", Model.CurrentTeam.Players[1].Email)
-
+    
     <div class="form-horizontal">
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
         <div class="form-group">
             @Html.LabelFor(model => model.Email, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
@@ -46,35 +42,18 @@
         </div>
 
         <div class="form-group">
-            @Html.LabelFor(model => model.Company, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Company, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Company, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Topic, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Topic, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Topic, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Consent, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            @Html.LabelFor(model => model.Consent, labelText: "I agree to allow Infusion to contact the email address provided.", htmlAttributes: new { @class = "control-label col-md-2 consent-label" })
+            @Html.EditorFor(model => model.Consent)
+            @Html.ValidationMessageFor(model => model.Consent, "", new { @class = "text-danger" })
+            @*<div class="col-md-10">
                 <div class="checkbox">
-                    @Html.EditorFor(model => model.Consent)
-                    @Html.ValidationMessageFor(model => model.Consent, "", new { @class = "text-danger" })
                 </div>
-            </div>
+            </div>*@
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" id="SaveButton" value="Save" class="btn btn-default" disabled />
+                <input type="submit" id="SaveButton" value="Save" class="dark-button" style="width: 100%;" disabled />
             </div>
         </div>
     </div>
@@ -92,6 +71,7 @@
                 });
             });
 
+            $("#Consent").addClass("consent-checkbox");
             $("#Consent").change(function () {
                 var saveButton = $("#SaveButton");
                 if (saveButton.attr("disabled"))

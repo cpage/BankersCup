@@ -120,11 +120,14 @@
     <Compile Include="Controllers\GameController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="DataAccess\DocumentDBRepository.cs" />
+    <Compile Include="Filters\AdminAccessRequiredAttribute.cs" />
     <Compile Include="Filters\RegistrationRequiredAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AddHoleScoreViewModel.cs" />
+    <Compile Include="Models\AdViewModel.cs" />
+    <Compile Include="Models\BadGlobalVariables.cs" />
     <Compile Include="Models\ContactDetails.cs" />
     <Compile Include="Models\ContactDetailsViewModel.cs" />
     <Compile Include="Models\Course.cs" />
@@ -146,6 +149,11 @@
     <Compile Include="RegistrationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\ads\app_migration.png" />
+    <Content Include="Content\ads\Azure_Governance.png" />
+    <Content Include="Content\ads\disruptive_innovation.png" />
+    <Content Include="Content\ads\modern_app_banner.png" />
+    <Content Include="Content\ads\omnichannel.png" />
     <Content Include="Content\ad_1.png" />
     <Content Include="Content\azure-logo.png" />
     <Content Include="Content\background.jpg" />

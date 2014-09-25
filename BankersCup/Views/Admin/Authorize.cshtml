@@ -1,27 +1,22 @@
 ﻿
 @{
-    ViewBag.Title = "Authorize";
+    ViewBag.Title = "Authorization Required";
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
 }
 
-<h2>Authorize</h2>
-@using(Html.BeginForm())
-{
+@using (Html.BeginForm()) { 
     @Html.AntiForgeryToken()
-
     <div class="form-horizontal">
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-
         <div class="form-group">
             @Html.Label("Authorization Code", htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.Editor("authCode", new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessage("authCode", "", new { @class = "text-danger" })
+                @Html.Password("authCode", "", new { @class = "form-control" })
             </div>
         </div>
 
         <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Authorize" class="btn btn-default" />
+                <input type="submit" id="SaveButton" value="Authorize" class="dark-button" style="width: 100%;"/>
             </div>
         </div>
     </div>

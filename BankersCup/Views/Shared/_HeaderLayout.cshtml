@@ -1,5 +1,8 @@
 ﻿@{
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    var randomNumber = new Random().Next(BankersCup.Models.BadGlobalVariables.Ads.Count);
+    var displayAd = BankersCup.Models.BadGlobalVariables.Ads[randomNumber];
 }
 @*<div class="header">
     <img src="~/Content/icon_menu.png" class="menu-img" />
@@ -44,7 +47,7 @@
     }
     <footer>
         @if (ViewBag.ShowAd == null || ViewBag.ShowAd) { 
-        <a href="@Url.Action("Contact", new { id = ViewBag.GameId, topic = "Cloud" })"><img class="footer-ad" src="~/Content/ad_1.png" /></a>
+        <a href="@Url.Action("Contact", new { id = ViewBag.GameId, topic = displayAd.Topic })"><img class="footer-ad" src="@displayAd.ImageUrl" /></a>
         }
     </footer>
 </div>
