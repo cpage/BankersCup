@@ -1,0 +1,30 @@
+﻿@model BankersCup.Models.ScorecardViewModel
+
+@{
+    ViewBag.Title = "Scorecard";
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+}
+
+
+
+<img class="dialog-section-image" src="~/Content/icon_round_details.png" />
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td>Hole</td>
+            <td></td>
+            <td>Score</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var score in Model.HoleScores)
+        {
+            <tr>
+                <td>@score.HoleNumber</td>
+                <td></td>
+                <td>@score.Score (@score.AgainstPar.ToString("+#;-#;E"))</td>
+            </tr>
+        }
+    </tbody>
+
+</table>

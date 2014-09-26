@@ -1,0 +1,8 @@
+﻿@model BankersCup.Models.ExportScoresViewModel
+@{
+    ViewBag.Title = "Export Scores for " + Model.GameName;
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+}
+
+<p style="padding-top: 20px;">Export saved to: <a class="dark-text" href="@Model.Url">@Model.Url</a></p>
+

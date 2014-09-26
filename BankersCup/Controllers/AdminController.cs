@@ -1,8 +1,12 @@
 ﻿using BankersCup.DataAccess;
 using BankersCup.Filters;
 using BankersCup.Models;
+using Microsoft.WindowsAzure.Storage;
+using Microsoft.WindowsAzure.Storage.Auth;
+using Microsoft.WindowsAzure.Storage.Blob;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -19,6 +23,113 @@ namespace BankersCup.Controllers
         public AdminController() : base()
         {
             ViewBag.ShowAd = false;
+        }
+
+        public async Task<ActionResult> FixHole2(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+
+            var hole2 = game.GameCourse.Holes.FirstOrDefault(h => h.HoleNumber == 2);
+            hole2.Par = 3;
+
+            var hole2scores = game.Scores.Where(s => s.HoleNumber == 2).ToList();
+
+            foreach(var hole in hole2scores)
+            {
+                hole.AgainstPar = hole.Score - hole2.Par;
+            }
+
+            await DocumentDBRepository.UpdateGame(game);
+
+            return RedirectToAction("Leaderboard", new { id = id });
+
+
+        }
+
+        public async Task<ActionResult> ExportScores(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
+            List<string> teamScoreDataList = new List<string>();
+
+            string[] headerData = new string[] {
+                "Team ID",
+                "Team Name",
+                "Player 1",
+                "Player 2",
+                "Hole 1",
+                "Hole 2",
+                "Hole 3",
+                "Hole 4",
+                "Hole 5",
+                "Hole 6",
+                "Hole 7",
+                "Hole 8",
+                "Hole 9",
+                "Hole 10",
+                "Hole 11",
+                "Hole 12",
+                "Hole 13",
+                "Hole 14",
+                "Hole 15",
+                "Hole 16",
+                "Hole 17",
+                "Hole 18"
+            };
+
+            teamScoreDataList.Add(String.Join(",", headerData));
+
+            foreach(var team in game.RegisteredTeams)
+            {
+                string[] teamData = new string[22];
+                teamData[0] = team.TeamId.ToString();
+                teamData[1] = team.TeamName;
+                teamData[2] = string.Format("{0} ({1})", team.Players[0].Name, team.Players[0].Company);
+                teamData[3] = string.Format("{0} ({1})", team.Players[1].Name, team.Players[1].Company);
+
+                int counter = 4;
+                foreach(var teamScore in game.Scores.Where(s => s.TeamId == team.TeamId).OrderBy(s => s.HoleNumber))
+                {
+                    teamData[counter++] = teamScore.Score.ToString();
+                }
+
+                teamScoreDataList.Add(String.Join(",", teamData));
+            }
+
+
+            MemoryStream memoryData = new MemoryStream();
+
+            var storage = CloudStorageAccount.Parse(ConfigurationManager.ConnectionStrings["CloudStorage"].ConnectionString);
+
+            //var uri = new StorageUri(new Uri("https://golfcupstorage.blob.core.windows.net/"));
+            //var creds = new StorageCredentials("golfcupstorage", "mivdKZtOsJgSWIHZ780uWcvhyo4SXwp+fFN2efNKDiYUq3dvi0efH08AAbgMytP520y6PQd35Lro0IlsPEUZRg==");
+            var client = storage.CreateCloudBlobClient();
+            var container = client.GetContainerReference("gamescoreexports");
+            await container.CreateIfNotExistsAsync();
+            await container.SetPermissionsAsync(new BlobContainerPermissions() { PublicAccess = BlobContainerPublicAccessType.Blob });
+            var gameScoresBlob = container.GetBlockBlobReference(string.Format("{0}_TeamScores_{1}.csv", game.Name, DateTime.Now.ToString("yyyyMMddTHHmm")));
+
+
+            using(var writer = new StreamWriter(memoryData))
+            {
+                foreach (var line in teamScoreDataList)
+                {
+                    await writer.WriteLineAsync(line);
+                }
+
+                await writer.FlushAsync();
+                memoryData.Position = 0;
+                
+                await gameScoresBlob.UploadFromStreamAsync(memoryData);
+
+            }
+
+            var vm = new ExportScoresViewModel() { GameId = game.GameId, GameName = game.Name, Url = gameScoresBlob.Uri.ToString() };
+            return View(vm);
+
+            //return File(memoryData.ToArray(), "text/csv", string.Format("{0}_TeamScores_{1}.csv", game.Name, DateTime.Now.ToString("yyyy-MM-ddTHH-mm" )));
+            
         }
         public async Task<ActionResult> Authorize()
         {
@@ -359,9 +470,11 @@ namespace BankersCup.Controllers
             {
                 var leaderboardEntry = new LeaderboardEntryViewModel();
                 leaderboardEntry.TeamName = team.TeamName;
+                leaderboardEntry.TeamId = team.TeamId;
                 
                 var teamScores = game.Scores.Where(s => s.TeamId == team.TeamId);
-                leaderboardEntry.AgainstPar = teamScores.Sum(s => s.AgainstPar);
+
+                leaderboardEntry.AgainstPar = teamScores.Count() > 0 ? teamScores.Sum(s => s.AgainstPar) : Int32.MaxValue;
                 
                 leaderboardEntry.TotalScore = teamScores.Sum(s => s.Score);
                 int currentHole;
@@ -375,7 +488,7 @@ namespace BankersCup.Controllers
                 }
                 else
                 {
-                    currentHole = teamScores.Max(s => s.HoleNumber) + 1;
+                    currentHole = teamScores.Last().HoleNumber + 1;
                 }
 
                 if(currentHole > 18)
@@ -415,6 +528,19 @@ namespace BankersCup.Controllers
             ViewBag.GameId = 1;
             List<ContactDetails> contacts = await DocumentDBRepository.GetAllContactsAsync();
             return View(contacts);
+        }
+
+        public async Task<ActionResult> Scorecard(int id, int teamId)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
+            ScorecardViewModel vm = new ScorecardViewModel();
+            vm.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == teamId);
+            vm.GameId = game.GameId;
+            vm.HoleScores = game.Scores.Where(s => s.TeamId == teamId).ToList();
+            
+            return View(vm);
         }
     }
 }

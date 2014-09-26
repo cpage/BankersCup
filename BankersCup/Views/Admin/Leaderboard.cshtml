@@ -12,6 +12,7 @@
 </select>
 <table id="leaderboardByTeams" class="table">
     <tr>
+        <td style="width: 10%"></td>
         <th>
             Team Name
         </th>
@@ -28,35 +29,51 @@
             Current Hole
         </th>
     </tr>
+    @{
+        int count = 1;
+        int previousScore = Int32.MaxValue;
+    }
+    @foreach (var item in Model.ByTeams)
+    {
+        <tr>
+            <td style="width: 10%;">
+                @if (item.AgainstPar != previousScore)
+                {
+                    previousScore = item.AgainstPar;
+                    <text>#@count</text>
+                    
+                }
+                @{count++;}
+            </td>
 
-@foreach (var item in Model.ByTeams) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.TeamName)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.TotalScore)
-        </td>
-        <td>
-            @if (item.HolesPlayed > 0)
-            {
-                @item.AgainstPar.ToString("+#;-#;E")
-            }
-            else
-            {
-                <text>---</text>
-            }
+            <td>
+                <a href="@Url.Action("Scorecard", new { id = ViewBag.GameId, teamId = item.TeamId })" class="dark-text">
+                    @Html.DisplayFor(modelItem => item.TeamName)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalScore)
+            </td>
+            <td>
+                @if (item.HolesPlayed > 0)
+                {
+                    @item.AgainstPar.ToString("+#;-#;E")
+                }
+                else
+                {
+                    <text>---</text>
+                }
 
-        </td>
+            </td>
 
-        <td>
-            @Html.DisplayFor(modelItem => item.HolesPlayed)
-        </td>
-        <td>
-            @item.CurrentHole.ToString("#;-#;--")
-        </td>
-    </tr>
-}
+            <td>
+                @Html.DisplayFor(modelItem => item.HolesPlayed)
+            </td>
+            <td>
+                @item.CurrentHole.ToString("#;-#;--")
+            </td>
+        </tr>
+    }
 
 </table>
 
