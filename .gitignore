@@ -6,6 +6,9 @@
 *.user
 *.sln.docstates
 
+# local assets
+/[Aa]ssets/
+
 # Build results
 
 [Dd]ebug/
