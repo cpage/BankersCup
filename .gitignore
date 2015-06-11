@@ -98,6 +98,10 @@ publish/
 # Publish Web Output
 *.Publish.xml
 
+# Bower and Node packages directory
+bower_components/
+node_modules/
+
 # NuGet Packages Directory
 packages/
 

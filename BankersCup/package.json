@@ -1,0 +1,30 @@
+{
+  "name": "BankersCup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": ""
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/cpage/BankersCup"
+  },
+  "author": "cpage@infusion.com",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/cpage/BankersCup/issues"
+  },
+  "homepage": "https://github.com/cpage/BankersCup",
+  "devDependencies": {
+    "del": "^1.2.0",
+    "gulp": "^3.9.0",
+    "gulp-bower": "0.0.10",
+    "gulp-concat": "^2.5.2",
+    "gulp-copy": "0.0.2",
+    "gulp-flatten": "0.0.4",
+    "gulp-minify-css": "^1.1.6",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-uglify": "^1.2.0"
+  }
+}

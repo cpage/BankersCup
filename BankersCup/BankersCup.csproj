@@ -137,7 +137,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AdminController.cs" />
@@ -189,6 +188,12 @@
     <Content Include="Content\bootstrap.min.css">
       <DependentUpon>bootstrap.css</DependentUpon>
     </Content>
+    <Content Include="Content\dist\css\app.css" />
+    <Content Include="Content\dist\css\app.min.css" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-bold\assets\bold.svg" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-light\assets\light.svg" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-medium\assets\medium.svg" />
+    <Content Include="Content\dist\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Content\divider_green.png" />
     <Content Include="Content\divider_white.png" />
     <Content Include="Content\header_image.png" />
@@ -214,11 +219,9 @@
     <Content Include="fonts\font-endzoneslab-light\font-endzoneslab-light.css" />
     <Content Include="fonts\font-endzoneslab-medium\assets\medium.svg" />
     <Content Include="fonts\font-endzoneslab-medium\font-endzoneslab-medium.css" />
-    <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="gulpfile.js" />
     <Content Include="Data\BankersCup_TeamImport_Template.csv" />
     <Content Include="fonts\font-endzoneslab-bold\assets\bold.eot" />
     <Content Include="fonts\font-endzoneslab-bold\assets\bold.ttf" />
@@ -229,19 +232,21 @@
     <Content Include="fonts\font-endzoneslab-medium\assets\medium.eot" />
     <Content Include="fonts\font-endzoneslab-medium\assets\medium.ttf" />
     <Content Include="fonts\font-endzoneslab-medium\assets\medium.woff" />
+    <Content Include="bower.json" />
+    <Content Include="package.json" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-bold\assets\bold.eot" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-bold\assets\bold.ttf" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-bold\assets\bold.woff" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-light\assets\light.eot" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-light\assets\light.ttf" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-light\assets\light.woff" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-medium\assets\medium.eot" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-medium\assets\medium.ttf" />
+    <Content Include="Content\dist\fonts\font-endzoneslab-medium\assets\medium.woff" />
+    <Content Include="Content\dist\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Content\dist\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Content\dist\fonts\glyphicons-halflings-regular.woff" />
     <None Include="Properties\PublishProfiles\bankerscup.pubxml" />
-    <None Include="Scripts\jquery-1.10.2.intellisense.js" />
-    <Content Include="Scripts\jquery-1.10.2.js" />
-    <Content Include="Scripts\jquery-1.10.2.min.js" />
-    <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery.cookie.js" />
-    <Content Include="Scripts\jquery.validate.js" />
-    <Content Include="Scripts\jquery.validate.min.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.js" />
-    <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
-    <Content Include="Scripts\modernizr-2.6.2.js" />
-    <Content Include="Scripts\respond.js" />
-    <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -257,7 +262,6 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
-    <Content Include="Scripts\jquery-1.10.2.min.map" />
     <Content Include="Views\Admin\Register.cshtml" />
     <Content Include="Views\Admin\Index.cshtml" />
     <Content Include="Views\Game\Join.cshtml" />
@@ -283,9 +287,6 @@
     <Folder Include="Views\Contact\" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="fonts\glyphicons-halflings-regular.woff" />
-    <Content Include="fonts\glyphicons-halflings-regular.ttf" />
-    <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="packages.config" />
     <None Include="Project_Readme.html" />
   </ItemGroup>

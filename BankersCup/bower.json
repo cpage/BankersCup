@@ -1,0 +1,26 @@
+{
+  "name": "BankersCup",
+  "version": "1.0.0",
+  "homepage": "https://github.com/cpage/BankersCup",
+  "authors": [
+    "Chris Page <cpage@infusion.com>"
+  ],
+  "description": "App to track golf scores at charity golf tournaments.",
+  "moduleType": [],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jQuery": "~2.1.4",
+    "jquery-validation": "~1.13.1",
+    "jquery-validation-unobtrusive": "~3.2.2",
+    "modernizr": "~2.8.3",
+    "bootstrap": "~3.3.4",
+    "respond-minmax": "~1.4.2"
+  }
+}
