@@ -225,32 +225,32 @@ namespace BankersCup.Controllers
 
             game.DocumentId = game.GameId.ToString();
 
-            game.Name = "Banker's Cup 2014";
-            game.GameDate = DateTime.Parse("2014/09/25");
+            game.Name = "Telco Cup 2015";
+            game.GameDate = DateTime.Parse("2015/06/18");
 
 
-            game.GameCourse = new Course() { Name = "King's Riding" };
+            game.GameCourse = new Course() { Name = "Masters Course @ Lionhead Golf & Country Club" };
 
             game.GameCourse.Holes = new List<HoleInfo>()
             {
-                new HoleInfo() { HoleNumber = 1, Distance = 460, Par = 4 },
-                new HoleInfo() { HoleNumber = 2, Distance = 380, Par = 4 },
-                new HoleInfo() { HoleNumber = 3, Distance = 123, Par = 4 },
-                new HoleInfo() { HoleNumber = 4, Distance = 345, Par = 4 },
-                new HoleInfo() { HoleNumber = 5, Distance = 452, Par = 3 },
-                new HoleInfo() { HoleNumber = 6, Distance = 395, Par = 4 },
-                new HoleInfo() { HoleNumber = 7, Distance = 135, Par = 4 },
-                new HoleInfo() { HoleNumber = 8, Distance = 391, Par = 4 },
-                new HoleInfo() { HoleNumber = 9, Distance = 383, Par = 5 },
-                new HoleInfo() { HoleNumber = 10, Distance = 369, Par = 5 },
-                new HoleInfo() { HoleNumber = 11, Distance = 435, Par = 4 },
-                new HoleInfo() { HoleNumber = 12, Distance = 152, Par = 3 },
-                new HoleInfo() { HoleNumber = 13, Distance = 481, Par = 4 },
-                new HoleInfo() { HoleNumber = 14, Distance = 330, Par = 4 },
-                new HoleInfo() { HoleNumber = 15, Distance = 115, Par = 5 },
-                new HoleInfo() { HoleNumber = 16, Distance = 452, Par = 3 },
-                new HoleInfo() { HoleNumber = 17, Distance = 365, Par = 4 },
-                new HoleInfo() { HoleNumber = 18, Distance = 461, Par = 4 },
+                new HoleInfo() { HoleNumber = 1, Distance = 450, Par = 5 },
+                new HoleInfo() { HoleNumber = 2, Distance = 322, Par = 4 },
+                new HoleInfo() { HoleNumber = 3, Distance = 122, Par = 3 },
+                new HoleInfo() { HoleNumber = 4, Distance = 374, Par = 4 },
+                new HoleInfo() { HoleNumber = 5, Distance = 400, Par = 4 },
+                new HoleInfo() { HoleNumber = 6, Distance = 505, Par = 5 },
+                new HoleInfo() { HoleNumber = 7, Distance = 358, Par = 4 },
+                new HoleInfo() { HoleNumber = 8, Distance = 125, Par = 3 },
+                new HoleInfo() { HoleNumber = 9, Distance = 385, Par = 4 },
+                new HoleInfo() { HoleNumber = 10, Distance = 490, Par = 5 },
+                new HoleInfo() { HoleNumber = 11, Distance = 118, Par = 3 },
+                new HoleInfo() { HoleNumber = 12, Distance = 375, Par = 4 },
+                new HoleInfo() { HoleNumber = 13, Distance = 358, Par = 4 },
+                new HoleInfo() { HoleNumber = 14, Distance = 350, Par = 4 },
+                new HoleInfo() { HoleNumber = 15, Distance = 320, Par = 4 },
+                new HoleInfo() { HoleNumber = 16, Distance = 440, Par = 5 },
+                new HoleInfo() { HoleNumber = 17, Distance = 130, Par = 3 },
+                new HoleInfo() { HoleNumber = 18, Distance = 387, Par = 4 },
             };
 
             game.RegisteredTeams = new List<Team>()
@@ -345,6 +345,25 @@ namespace BankersCup.Controllers
                 s.AgainstPar = s.Score - game.GameCourse.Holes[s.HoleNumber - 1].Par;
             }
 
+            game.Comments = new List<Comment>();
+            game.Comments.Add(new Comment()
+            {
+                TeamId = 0,
+                TeamName = "Admin",
+                HoleNumber = 0,
+                DateEntered = DateTime.Now,
+                Content = "Welcome to the " + game.Name + " at the " + game.GameCourse.Name + "! Par for the course is: " + game.GameCourse.Par + " with a total distance of " + game.GameCourse.Distance + " yards. Good luck!"
+            });
+
+            foreach(var hole in game.GameCourse.Holes) {
+                game.Comments.Add(new Comment() {
+                    TeamId = 0,
+                    TeamName = "Admin",
+                    HoleNumber = hole.HoleNumber,
+                    DateEntered = DateTime.Now,
+                    Content = "Hole #" + hole.HoleNumber + " is a par " + hole.Par + " with a distance of " + hole.Distance + " yards."
+                });
+            }
             await DocumentDBRepository.CreateGame(game);
 
             return RedirectToAction("Index", "Admin", new { id = game.GameId });
@@ -515,7 +534,7 @@ namespace BankersCup.Controllers
                 leaderboardEntry.AgainstPar = institutionScores.Sum(s => s.AgainstPar);
 
                 leaderboardListByInstitution.Add(leaderboardEntry);
-            }
+           } 
 
             leaderboard.ByTeams = leaderboardListByTeam.OrderBy(s => s.AgainstPar).ToList();
             leaderboard.ByInstitutions = leaderboardListByInstitution.OrderBy(s => s.AgainstPar).ToList();

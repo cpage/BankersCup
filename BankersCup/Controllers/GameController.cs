@@ -188,7 +188,7 @@ namespace BankersCup.Controllers
             int currentHole = 0;
             var existingHoleScore = game.Scores.FirstOrDefault(s => s.TeamId == teamId && s.HoleNumber == holeNumber.GetValueOrDefault());
 
-            if (holeNumber == null || existingHoleScore == null)
+            if (holeNumber == null)
             {
 
                 if (teamScores.Count() == 0)
@@ -217,6 +217,8 @@ namespace BankersCup.Controllers
                 averageScore = game.Scores.Where(s => s.HoleNumber == currentHole).Average(s => s.Score);
             }
 
+            var holeComments = game.Comments.Where(c => c.HoleNumber == currentHole).ToList();
+
             AddHoleScoreViewModel vm = new AddHoleScoreViewModel()
             {
                 GameId = game.GameId,
@@ -225,7 +227,8 @@ namespace BankersCup.Controllers
                 Distance = holeInfo.Distance,
                 TeamId = teamId,
                 TeamScore = existingHoleScore == null ? holeInfo.Par : existingHoleScore.Score,
-                AverageScore = averageScore
+                AverageScore = averageScore,
+                Comments = holeComments
             };
             
             return View(vm);
@@ -234,40 +237,45 @@ namespace BankersCup.Controllers
         [HttpPost]
         [RegistrationRequired]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddHole(AddHoleScoreViewModel newScore)
+        public async Task<ActionResult> AddHole(int id, AddHoleScoreViewModel newScore)
         {
+            bool requireSave = false;
             var game = await DocumentDBRepository.GetGameById(newScore.GameId);
             ViewBag.GameId = game.GameId;
 
             var score = game.Scores.FirstOrDefault(s => s.TeamId == newScore.TeamId && s.HoleNumber == newScore.HoleNumber);
 
-            if(score == null)
+
+            if (newScore.SaveScore)
             {
-                score = new TeamHoleScore();
-                game.Scores.Add(score);
+                requireSave = true;
+                if (score == null)
+                {
+                    score = new TeamHoleScore();
+                    game.Scores.Add(score);
+                }
                 score.TeamId = newScore.TeamId;
                 score.HoleNumber = newScore.HoleNumber;
+                score.Score = newScore.TeamScore;
+                score.AgainstPar = newScore.TeamScore - newScore.Par;
             }
 
-            score.Score = newScore.TeamScore;
-            score.AgainstPar = newScore.TeamScore - newScore.Par;
-
-            string action = "Details";
+            string action = "AddHole";
             dynamic actionParams;
 
-            if(newScore.NextHoleAfterSave || newScore.PreviousHoleAfterSave)
+            if(newScore.MoveNext || newScore.MovePrevious)
             {
                 action = "AddHole";
 
                 int nextHole = newScore.HoleNumber;
-                if (newScore.NextHoleAfterSave)
+                if (newScore.MoveNext)
                 {
                     if (++nextHole > 18)
                     {
                         nextHole = 1;
                     }
                 }
-                if (newScore.PreviousHoleAfterSave)
+                if (newScore.MovePrevious)
                 {
                     if (--nextHole < 1)
                     {
@@ -278,10 +286,30 @@ namespace BankersCup.Controllers
             }
             else
             {
-                actionParams = new { id = newScore.GameId };
+                actionParams = new { id = newScore.GameId, holeNumber = newScore.HoleNumber };
             }
 
-            await DocumentDBRepository.UpdateGame(game);
+            if(!string.IsNullOrWhiteSpace(newScore.NewComment))
+            {
+                requireSave = true;
+                var comment = new Comment() {
+                    TeamId = newScore.TeamId,
+                    TeamName = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == newScore.TeamId).TeamName,
+                    HoleNumber = newScore.HoleNumber,
+                    DateEntered = DateTime.Now,
+                    Content = newScore.NewComment
+                };
+
+                if(game.Comments == null)
+                {
+                    game.Comments = new List<Comment>();
+                }
+
+                game.Comments.Add(comment);
+            }
+
+            if(requireSave)
+                await DocumentDBRepository.UpdateGame(game);
             
             return RedirectToAction(action, actionParams);
             
@@ -300,7 +328,45 @@ namespace BankersCup.Controllers
             leaderboardVM.HolesPlayed = calculateHolesPlayedForCurrentTeam(game);
             leaderboardVM.Teams = calculateLeaderboardBasedOnCurrentTeam(game);
 
+            if(game.Comments == null)
+            {
+                game.Comments = new List<Comment>();
+            }
+
+            leaderboardVM.Comments = game.Comments.Where(c => c.HoleNumber == 0).ToList();
+
             return View(leaderboardVM);
+        }
+
+        [HttpPost, RegistrationRequired, ValidateAntiForgeryToken]
+        public async Task<ActionResult> Leaderboard(int id, LeaderboardViewModel vm)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+            
+
+            if (!string.IsNullOrWhiteSpace(vm.NewComment))
+            {
+                var comment = new Comment()
+                {
+                    TeamId = vm.CurrentTeam.TeamId,
+                    TeamName = vm.CurrentTeam.TeamName,
+                    HoleNumber = 0,
+                    DateEntered = DateTime.Now,
+                    Content = vm.NewComment
+                };
+
+                if (game.Comments == null)
+                {
+                    game.Comments = new List<Comment>();
+                }
+
+                game.Comments.Add(comment);
+                await DocumentDBRepository.UpdateGame(game);
+            }
+
+            return RedirectToAction("Leaderboard", new { id = id });
+
         }
 
         [RegistrationRequired]

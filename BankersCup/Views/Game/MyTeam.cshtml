@@ -43,7 +43,7 @@
 
 <div class="button-row">
     <a href="@Url.Action("Join", "Game", new { id = ViewBag.GameId })"><input type=button id="NotMeBtn" value="Not Me" class="dark-button dark-button-2col" /></a>
-    <a href="@Url.Action("Details", "Game", new { id = ViewBag.GameId })"><input type=button value="Continue >" class="green-button dark-button-2col" /></a>
+    <a href="@Url.Action("Leaderboard", "Game", new { id = ViewBag.GameId })"><input type=button value="Continue >" class="green-button dark-button-2col" /></a>
 </div>
 
 @section scripts {

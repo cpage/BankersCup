@@ -15,7 +15,12 @@ namespace BankersCup.Models
         public int TeamId { get; set; }
         public double AverageScore { get; set; }
         public bool AllHoleScoresEntered { get; set; }
-        public bool NextHoleAfterSave { get; set; }
-        public bool PreviousHoleAfterSave { get; set; }
+        public bool MoveNext { get; set; }
+        public bool MovePrevious{ get; set; }
+        public bool SaveScore { get; set; }
+        
+        public IList<Comment> Comments { get; set; }
+
+        public string NewComment { get; set; }
     }
 }

@@ -38,5 +38,7 @@ namespace BankersCup.Models
 
             return RegisteredTeams.Max(t => t.TeamId) + 1;
         }
+
+        public List<Comment> Comments { get; set; }
     }
 }

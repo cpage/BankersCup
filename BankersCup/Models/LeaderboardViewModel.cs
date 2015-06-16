@@ -10,5 +10,8 @@ namespace BankersCup.Models
         public List<LeaderboardEntryViewModel> Teams { get; set; }
         public int HolesPlayed { get; set; }
         public Team CurrentTeam { get; set; }
+
+        public List<Comment> Comments { get; set; }
+        public string NewComment { get; set; }
     }
 }

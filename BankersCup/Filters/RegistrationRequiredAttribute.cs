@@ -21,7 +21,7 @@ namespace BankersCup.Filters
             int gameId;
             if(id == null || !Int32.TryParse(id.ToString(), out gameId))
             {
-                gameId = 1;
+                gameId = 3;
             }
 
             var registeredTeamId = RegistrationHelper.GetRegistrationCookieValue(filterContext.HttpContext, gameId);

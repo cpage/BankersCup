@@ -6643,8 +6643,8 @@ a,a:visited,a:active,a:hover {
 
 .header-image {
     margin: 0 auto;
-    display:block;
-    padding: 10px 0 5px 0;
+    display:inline;
+    padding: 10px 0 5px 50px;
 }
 
 .menu-img {
@@ -6766,6 +6766,11 @@ a,a:visited,a:active,a:hover {
 .dark-button-2col {
     width: 45%;
 }
+
+.dark-button-full {
+    width: 100%;
+}
+
 .add-hole-button {
     background-color: #25AD5F;
     color: white;
@@ -6935,6 +6940,34 @@ a,a:visited,a:active,a:hover {
 #leaderboardByInstitutions > tbody > tr > td
 {
     text-align: center;
+}
+
+textarea {
+    width: 100%;
+    height: 10em;
+}
+
+.comment-table {
+    text-align: left !important;
+
+}
+
+.comment-cell-teamname {
+    text-align: right !important;
+    vertical-align: top !important;
+    width: 30% !important;
+    padding-right: 10px;
+    font-weight: bold;
+}
+
+.comment-cell-contents {
+    vertical-align: top !important;
+    text-align: left !important;
+    width: 70% !important;
+}
+
+.comment-cell-contents > span {
+    padding-bottom: 10px;
 }
 @font-face{font-family:"NFLEndzoneSlabBold";src:url("/Content/dist/fonts/font-endzoneslab-bold/assets/bold.eot")}@font-face{font-family:"NFLEndzoneSlabBold";src:url("//:") format("no404"),url("/Content/dist/fonts/font-endzoneslab-bold/assets/bold.eot?iefix") format("eot"),url("/Content/dist/fonts/font-endzoneslab-bold/assets/bold.woff") format("woff"),url("/Content/dist/fonts/font-endzoneslab-bold/assets/bold.ttf") format("truetype"),url("/Content/dist/fonts/font-endzoneslab-bold/assets/bold.svg#webfontIapIc83v") format("svg");font-weight:normal;font-style:normal}
 

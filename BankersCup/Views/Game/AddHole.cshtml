@@ -18,8 +18,9 @@ using (Html.BeginForm())
         @Html.HiddenFor(model => model.Par)
         @Html.HiddenFor(model => model.GameId)
         @Html.HiddenFor(model => model.TeamId)
-        @Html.HiddenFor(model => model.NextHoleAfterSave)
-        @Html.HiddenFor(model => model.PreviousHoleAfterSave)
+        @Html.HiddenFor(model => model.MoveNext)
+        @Html.HiddenFor(model => model.MovePrevious)
+        @Html.HiddenFor(model => model.SaveScore)
 
     @*<img class="dialog-section-image" src="~/Content/icon_round_details.png" />*@
     <table class="table-dialog-content">
@@ -48,16 +49,47 @@ using (Html.BeginForm())
             <tr>
                 <td>
                     @Html.DropDownListFor(model => model.TeamScore, new SelectList(Enumerable.Range(1, 8)), new { @class = "score-dropdown" })
+                    <input id="saveScore" type="submit" value="Save Score" class="green-button dark-button-2col table-data-entry" />
                 </td>
             </tr>
             <tr>
                 <td>
-                    <input id="savePrevious" type="submit" value="Previous" class="green-button dark-button-2col table-data-entry" />
-                    <input id="saveNext" type="submit" value="Next" class="green-button dark-button-2col table-data-entry" />
+                    <input id="movePreviousBtn" type="submit" value="Previous" class="green-button dark-button-2col table-data-entry" />
+                    <input id="moveNextBtn" type="submit" value="Next" class="green-button dark-button-2col table-data-entry" />
                 </td>
             </tr>
         </tbody>
-    </table> 
+    </table>
+
+    <table class="table-dialog-content comment-table">
+        <thead>
+            <tr>
+                <td colspan="2">Comments</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var comment in Model.Comments)
+            {
+                <tr class="comment-table-row">
+                    <td class="comment-cell-teamname">
+                        <span>@comment.TeamName:</span>
+                    </td>
+                    <td class="comment-cell-contents"><p>@comment.Content</p></td>
+                </tr>
+            }
+            <tr>
+                <td colspan="2">
+                    <textarea name="NewComment"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <input id="saveComment" type="submit" value="Enter Comment" class="green-button dark-button-full table-data-entry" />
+                </td>
+                
+            </tr>
+        </tbody>
+    </table>
 
     }
 }
@@ -66,12 +98,16 @@ using (Html.BeginForm())
     <script>
         $(document).ready(function () {
             $("#TeamScore").select();
-            $("#saveNext").click(function () {
-                $("#NextHoleAfterSave").val("True");
+            $("#moveNextBtn").click(function () {
+                $("#MoveNext").val("True");
             });
-            $("#savePrevious").click(function () {
-                $("#PreviousHoleAfterSave").val("True");
+            $("#movePreviousBtn").click(function () {
+                $("#MovePrevious").val("True");
             });
+            $("#saveScore").click(function () {
+                $("#SaveScore").val("True");
+            });
+
         })
 
     </script>

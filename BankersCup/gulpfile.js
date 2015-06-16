@@ -39,7 +39,8 @@ var config = {
     appfontcss: 'fonts/**/*.css',
     appfonts: 'fonts/**/*.{eot,ttf,woff,eof,svg}',
     fontsout: 'Content/dist/fonts',
-    cssout: 'Content/dist/css'
+    cssout: 'Content/dist/css',
+    jsout: 'Content/dist/js'
 
 }
 
@@ -54,7 +55,7 @@ gulp.task('clean-vendor-scripts', function (cb) {
 gulp.task('jquery-bundle', ['clean-vendor-scripts', 'bower-restore'], function () {
     return gulp.src(config.jquerysrc)
      .pipe(concat('jquery-bundle.min.js'))
-     .pipe(gulp.dest('Scripts'));
+     .pipe(gulp.dest(config.jsout));
 });
 
 //Create a bootstrap bundled file
@@ -63,7 +64,7 @@ gulp.task('bootstrap-bundle', ['clean-vendor-scripts', 'bower-restore'], functio
      .pipe(sourcemaps.init())
      .pipe(concat('bootstrap-bundle.min.js'))
      .pipe(sourcemaps.write('maps'))
-     .pipe(gulp.dest('Scripts'));
+     .pipe(gulp.dest(config.jsout));
 });
 
 //Create a modernizr bundled file
@@ -73,7 +74,7 @@ gulp.task('modernizer', ['clean-vendor-scripts', 'bower-restore'], function () {
         .pipe(uglify())
         .pipe(concat('modernizer-min.js'))
         .pipe(sourcemaps.write('maps'))
-        .pipe(gulp.dest('Scripts'));
+        .pipe(gulp.dest(config.jsout));
 });
 
 // Combine and the vendor files from bower into bundles (output to the Scripts folder)
@@ -108,7 +109,7 @@ gulp.task('styles', ['css', 'fonts'], function () {
 
 //Restore all bower packages
 gulp.task('bower-restore', function () {
-    return bower();
+    //return bower();
 });
 
 //Set a default tasks 

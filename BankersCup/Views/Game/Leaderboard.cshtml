@@ -5,11 +5,18 @@
     ViewBag.Title = string.Format("Leaderboard through {0} hole{1}...", Model.HolesPlayed, Model.HolesPlayed == 1 ? string.Empty : "s");
 }
 
-<img class="dialog-section-image" src="~/Content/icon_leaderboard.png" />
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.CurrentTeam.TeamId)
+    @Html.HiddenFor(model => model.CurrentTeam.TeamName)
+
+
+    <img class="dialog-section-image" src="~/Content/icon_leaderboard.png" />
 <table class="table-dialog-content">
     <tbody>
         @{
-            bool isCurrentTeam = false;
+    bool isCurrentTeam = false;
             int previousScore = Int32.MinValue;
             bool showPosition = true;
         }
@@ -29,3 +36,36 @@
         }
     </tbody>
 </table>
+
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td colspan="2">Comments</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model.Comments)
+        {
+            <tr class="comment-table-row">
+                <td class="comment-cell-teamname">
+                    <span>@comment.TeamName:</span>
+                </td>
+                <td class="comment-cell-contents"><p>@comment.Content</p></td>
+            </tr>
+        }
+        <tr>
+            <td colspan="2">
+                <textarea name="NewComment"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <input id="saveComment" type="submit" value="Enter Comment" class="green-button dark-button-full table-data-entry" />
+            </td>
+
+        </tr>
+    </tbody>
+
+
+</table>
+}
