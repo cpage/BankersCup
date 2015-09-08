@@ -188,7 +188,7 @@ namespace BankersCup.Controllers
             int currentHole = 0;
             var existingHoleScore = game.Scores.FirstOrDefault(s => s.TeamId == teamId && s.HoleNumber == holeNumber.GetValueOrDefault());
 
-            if (holeNumber == null || existingHoleScore == null)
+            if (holeNumber == null)
             {
 
                 if (teamScores.Count() == 0)
@@ -209,6 +209,7 @@ namespace BankersCup.Controllers
             {
                 currentHole = holeNumber.Value;
             }
+
             var holeInfo = game.GameCourse.Holes.First(h => h.HoleNumber == currentHole);
             var scores = game.Scores.Where(s => s.HoleNumber == currentHole);
             double averageScore = 0.0;
@@ -234,7 +235,7 @@ namespace BankersCup.Controllers
         [HttpPost]
         [RegistrationRequired]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddHole(AddHoleScoreViewModel newScore)
+        public async Task<ActionResult> AddHole(int id, AddHoleScoreViewModel newScore)
         {
             var game = await DocumentDBRepository.GetGameById(newScore.GameId);
             ViewBag.GameId = game.GameId;
@@ -255,19 +256,19 @@ namespace BankersCup.Controllers
             string action = "Details";
             dynamic actionParams;
 
-            if(newScore.NextHoleAfterSave || newScore.PreviousHoleAfterSave)
+            if(newScore.MoveNext || newScore.MovePrevious || newScore.SaveScore)
             {
                 action = "AddHole";
 
                 int nextHole = newScore.HoleNumber;
-                if (newScore.NextHoleAfterSave)
+                if (newScore.MoveNext)
                 {
                     if (++nextHole > 18)
                     {
                         nextHole = 1;
                     }
                 }
-                if (newScore.PreviousHoleAfterSave)
+                if (newScore.MovePrevious)
                 {
                     if (--nextHole < 1)
                     {
@@ -281,8 +282,11 @@ namespace BankersCup.Controllers
                 actionParams = new { id = newScore.GameId };
             }
 
-            await DocumentDBRepository.UpdateGame(game);
-            
+            if (newScore.SaveScore)
+            {
+                await DocumentDBRepository.UpdateGame(game);
+            }
+
             return RedirectToAction(action, actionParams);
             
 
