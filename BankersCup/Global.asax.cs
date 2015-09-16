@@ -67,7 +67,6 @@ namespace BankersCup
                 game.RegisteredTeams = new List<Team>()
             {
                 new Team() {
-                    RegistrationCode = "12345",
                     TeamId = 1,
                     TeamName = "Infusion",
                     Players = new List<Player>() {
@@ -89,7 +88,6 @@ namespace BankersCup
                     }
                 },
                 new Team() {
-                    RegistrationCode = "67890",
                     TeamId = 2,
                     TeamName = "Indigo",
                     Players = new List<Player>() {

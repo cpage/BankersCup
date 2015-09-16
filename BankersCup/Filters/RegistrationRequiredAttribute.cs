@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BankersCup.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -24,9 +25,9 @@ namespace BankersCup.Filters
                 gameId = 1;
             }
 
-            var registeredTeamId = RegistrationHelper.GetRegistrationCookieValue(filterContext.HttpContext, gameId);
+            var registeredTeamId = RegistrationHelper.GetRegistrationCookieValue(filterContext.HttpContext, gameId).TeamId;
             
-            if (registeredTeamId == RegistrationHelper.InvalidTeamId)
+            if (registeredTeamId == RegistrationCookieValues.InvalidValues.TeamId)
                 filterContext.Result = new RedirectToRouteResult(new System.Web.Routing.RouteValueDictionary(new { controller = "Game", action = "Join", id = gameId }));
         }
     }

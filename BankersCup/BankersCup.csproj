@@ -154,6 +154,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\RegistrationCookieValues.cs" />
     <Compile Include="Models\AddHoleScoreViewModel.cs" />
     <Compile Include="Models\AdViewModel.cs" />
     <Compile Include="Models\BadGlobalVariables.cs" />
@@ -177,7 +178,7 @@
     <Compile Include="Models\ScorecardViewModel.cs" />
     <Compile Include="Models\Team.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegistrationHelper.cs" />
+    <Compile Include="Helpers\RegistrationHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\ads\app_migration.png" />

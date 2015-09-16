@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using BankersCup.DataAccess;
 using System.Threading.Tasks;
+using BankersCup.Helpers;
 
 namespace BankersCup.Controllers
 {
@@ -44,15 +45,15 @@ namespace BankersCup.Controllers
             var game = await DocumentDBRepository.GetGameById(id.GetValueOrDefault(1));
             ViewBag.GameId = game.GameId;
 
-            var currentTeamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+            var currentRegistration = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
 
             GameDetailsViewModel vm = new GameDetailsViewModel();
             vm.GameId = game.GameId;
             vm.GameCourse = game.GameCourse;
-            vm.CurrentTeamScores = game.Scores.Where(s => s.TeamId == currentTeamId).ToList();
+            vm.CurrentTeamScores = game.Scores.Where(s => s.TeamId == currentRegistration.TeamId).ToList();
             vm.HolesPlayed = calculateHolesPlayedForCurrentTeam(game);
 
-            vm.CurrentTeam = game.RegisteredTeams.First(t => t.TeamId == currentTeamId);
+            vm.CurrentTeam = game.RegisteredTeams.First(t => t.TeamId == currentRegistration.TeamId);
 
             vm.Leaderboard = calculateLeaderboardBasedOnCurrentTeam(game);
 
@@ -135,7 +136,7 @@ namespace BankersCup.Controllers
         {
             var game = await DocumentDBRepository.GetGameById(id);
             ViewBag.GameId = game.GameId;
-            var currentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id));
+            var currentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id).TeamId);
             var details = new GameDetailsViewModel();
             details.GameId = id;
             details.CurrentTeam = currentTeam;
@@ -159,10 +160,12 @@ namespace BankersCup.Controllers
             var game = await DocumentDBRepository.GetGameById(joinModel.Id);
             ViewBag.GameId = game.GameId;
 
-            var team = game.RegisteredTeams.FirstOrDefault(t => t.RegistrationCode == joinModel.RegistrationCode);
+            
+            var team = game.RegisteredTeams.FirstOrDefault(t => t.Players.Any(p => p.RegistrationCode == joinModel.RegistrationCode));
             if(team != null)
             {
-                RegistrationHelper.SetRegistrationCookie(this.HttpContext, joinModel.Id, team.TeamId);
+                var player = team.Players.FirstOrDefault(p => p.RegistrationCode == joinModel.RegistrationCode);
+                RegistrationHelper.SetRegistrationCookie(this.HttpContext, joinModel.Id, team.TeamId, player.PlayerId);
                 return RedirectToAction("MyTeam", new { Id = joinModel.Id } );
             }
 
@@ -176,7 +179,7 @@ namespace BankersCup.Controllers
             var game = await DocumentDBRepository.GetGameById(id);
             ViewBag.GameId = game.GameId;
 
-            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId).TeamId;
 
             var teamScores = game.Scores.Where(s => s.TeamId == teamId);
 
@@ -299,7 +302,7 @@ namespace BankersCup.Controllers
             ViewBag.GameId = game.GameId;
 
             LeaderboardViewModel leaderboardVM = new LeaderboardViewModel();
-            int teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+            int teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId).TeamId;
             leaderboardVM.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == teamId);
             leaderboardVM.HolesPlayed = calculateHolesPlayedForCurrentTeam(game);
             leaderboardVM.Teams = calculateLeaderboardBasedOnCurrentTeam(game);
@@ -315,7 +318,7 @@ namespace BankersCup.Controllers
 
             ScorecardViewModel vm = new ScorecardViewModel();
             vm.GameId = game.GameId;
-            vm.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId));
+            vm.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId).TeamId);
             vm.HoleScores = game.Scores.Where(s => s.TeamId == vm.CurrentTeam.TeamId).ToList();
             return View(vm);
         }
@@ -326,7 +329,7 @@ namespace BankersCup.Controllers
             var game = await DocumentDBRepository.GetGameById(id);
             ViewBag.GameId = game.GameId;
 
-            var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id));
+            var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id).TeamId);
 
             ContactDetailsViewModel contactDetails = new ContactDetailsViewModel();
             contactDetails.CurrentTeam = team;
@@ -375,7 +378,7 @@ namespace BankersCup.Controllers
 
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)
         {
-            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.GameId);
+            var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.GameId).TeamId;
             int holesPlayed = currentGame.Scores.Count(s => s.TeamId == teamId);
 
             return holesPlayed;

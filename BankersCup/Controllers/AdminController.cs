@@ -191,20 +191,34 @@ namespace BankersCup.Controllers
                 {
                     newTeam.TeamId = game.RegisteredTeams.Max(t => t.TeamId) + 1;
                 }
-                newTeam.RegistrationCode = new Random().Next(0, 1000).ToString();
+
+                int playerId = 1;
+                foreach (var player in newTeam.Players)
+                {
+                    player.PlayerId = playerId++;
+                    player.RegistrationCode = new Random().Next(0, 1000).ToString();
+                }
+
                 game.RegisteredTeams.Add(newTeam);
             }
+
             else
             {
                 var currentTeam = game.RegisteredTeams.First(t => t.TeamId == newTeam.TeamId);
                 currentTeam.TeamName = newTeam.TeamName;
-                currentTeam.RegistrationCode = newTeam.RegistrationCode;
                 currentTeam.StartingHole = newTeam.StartingHole;
                 currentTeam.Players = newTeam.Players;
                 foreach (var player in currentTeam.Players.Where(p => p.IsRemoved).ToList())
                 {
                     currentTeam.Players.Remove(player);
                 }
+
+                var newPlayerId = currentTeam.Players.Max(p => p.PlayerId) + 1;
+                foreach (var player in currentTeam.Players.Where(p => p.PlayerId == 0))
+                {
+                    player.PlayerId = newPlayerId++;
+                }
+
             }
 
             await DocumentDBRepository.UpdateGame(game);
@@ -256,50 +270,60 @@ namespace BankersCup.Controllers
             game.RegisteredTeams = new List<Team>()
             {
                 new Team() {
-                    RegistrationCode = "12345",
                     TeamId = 1,
                     TeamName = "Infusion",
                     StartingHole = 1,
                     TeeTime = game.GameDate.Date.AddHours(9),
                     Players = new List<Player>() {
                         new Player() {
+                            PlayerId = 1,
                             Company = "Infusion",
                             Email = "bbaldasti@infusion.com",
-                            Name = "Bill Baldasti"
+                            Name = "Bill Baldasti",
+                            RegistrationCode = "12345"
                         },
                         new Player() {
+                            PlayerId = 2,
                             Company = "Infusion",
                             Email = "sellis@infusion.com",
-                            Name = "Steve Ellis"
+                            Name = "Steve Ellis",
+                            RegistrationCode = "23456"
                         },
                         new Player() {
+                            PlayerId = 3,
                             Company = "Infusion",
                             Email = "cpage@infusion.com",
-                            Name = "Chris Page"
+                            Name = "Chris Page",
+                            RegistrationCode = "34567"
                         }
                     }
                 },
                 new Team() {
-                    RegistrationCode = "67890",
                     TeamId = 2,
                     TeamName = "Indigo",
                     StartingHole = 10,
                     TeeTime = game.GameDate.Date.AddHours(9).AddMinutes(15),
                     Players = new List<Player>() {
                         new Player() {
+                            PlayerId = 1,
                             Company = "Indigo",
                             Email = "bpo@indigo.ca",
-                            Name = "Bo P"
+                            Name = "Bo P",
+                            RegistrationCode = "45678"
                         },
                         new Player() {
+                            PlayerId = 2,
                             Company = "Indigo",
                             Email = "mtolley@indigo.ca",
-                            Name = "Mark Tolley"
+                            Name = "Mark Tolley",
+                            RegistrationCode = "56789"
                         },
                         new Player() {
+                            PlayerId = 3,
                             Company = "Indigo",
                             Email = "sgoneau@indigo.ca",
-                            Name = "Stephen Goneau"
+                            Name = "Stephen Goneau",
+                            RegistrationCode = "67890"
                         }
                     }
                 }
@@ -412,7 +436,7 @@ namespace BankersCup.Controllers
                 {
 
                     var teamData = teamLines[count].Split(',');
-                    if (teamData.Length != 11)
+                    if (teamData.Length != 12)
                     {
                         continue;
                     }
@@ -421,24 +445,28 @@ namespace BankersCup.Controllers
                     team.TeamId = game.GetNextTeamId();
                     team.TeamName = teamData[0];
                     team.Institution = teamData[1];
-                    team.RegistrationCode = teamData[2];
                     int startingHole;
-                    if (!Int32.TryParse(teamData[3], out startingHole))
+                    if (!Int32.TryParse(teamData[2], out startingHole))
                     {
                         startingHole = 1;
                     }
                     team.StartingHole = startingHole;
                     team.TeeTime = game.GameDate.Date.AddHours(9);
 
+                    int playerId = 1;
                     var player1 = new Player();
-                    player1.Name = teamData[5];
-                    player1.Company = teamData[6];
-                    player1.Email = teamData[7];
+                    player1.PlayerId = playerId++;
+                    player1.Name = teamData[4];
+                    player1.Company = teamData[5];
+                    player1.Email = teamData[6];
+                    player1.RegistrationCode = teamData[7];
 
                     var player2 = new Player();
+                    player2.PlayerId = playerId++;
                     player2.Name = teamData[8];
                     player2.Company = teamData[9];
                     player2.Email = teamData[10];
+                    player2.RegistrationCode = teamData[11];
 
                     team.Players = new List<Player>() { player1, player2 };
 

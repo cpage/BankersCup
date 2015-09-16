@@ -8,7 +8,6 @@ namespace BankersCup.Models
     public class Team
     {
         public int TeamId { get; set; }
-        public string RegistrationCode { get; set; }
         public string TeamName { get; set; }
         public string Institution { get; set; }
         public int StartingHole { get; set; }

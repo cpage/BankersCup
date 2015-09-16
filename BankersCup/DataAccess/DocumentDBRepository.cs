@@ -52,7 +52,6 @@ namespace BankersCup.DataAccess
             game.RegisteredTeams = new List<Team>()
             {
                 new Team() {
-                    RegistrationCode = "12345",
                     TeamId = 1,
                     TeamName = "Infusion",
                     StartingHole = 1,
@@ -71,7 +70,6 @@ namespace BankersCup.DataAccess
                     }
                 },
                 new Team() {
-                    RegistrationCode = "67890",
                     TeamId = 2,
                     TeamName = "Indigo",
                     StartingHole = 10,
