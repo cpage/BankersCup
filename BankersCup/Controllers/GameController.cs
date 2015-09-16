@@ -361,6 +361,18 @@ namespace BankersCup.Controllers
             return RedirectToAction("Details", "Game", new { id = id });
         }
 
+
+        [RegistrationRequired]
+        public async Task<ActionResult> Gallery(int id)
+        {
+            var game = await DocumentDBRepository.GetGameById(id);
+            ViewBag.GameId = game.GameId;
+
+            
+
+            return View();
+        }
+
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)
         {
             var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, currentGame.GameId);
