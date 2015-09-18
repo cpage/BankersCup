@@ -27,6 +27,10 @@ namespace BankersCup.Models
 
         public List<TeamHoleScore> Scores { get; set; }
 
+        public List<GameComment> Comments { get; set; }
+
+        public List<Image> Images { get; set; }
+
         public bool IsDeleted { get; set; }
 
         public int GetNextTeamId()

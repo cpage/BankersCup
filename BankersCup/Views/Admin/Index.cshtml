@@ -21,9 +21,6 @@
         <th>
             Tee Time
         </th>
-        <th>
-            Registration Code
-        </th>
     </tr>
 
 @foreach (var item in Model.RegisteredTeams) {
@@ -39,9 +36,6 @@
         </td>
         <td>
             @item.TeeTime.ToString("hh:mmtt") on Hole @item.StartingHole
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.RegistrationCode)
         </td>
     </tr>
 }

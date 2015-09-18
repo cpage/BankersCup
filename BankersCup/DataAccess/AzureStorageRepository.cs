@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 
 namespace BankersCup.DataAccess
@@ -21,15 +22,17 @@ namespace BankersCup.DataAccess
         }
 
 
-        public static void SaveImage(int gameId, string imageName, byte[] image)
+        public static async Task<string> SaveImageAsync(int gameId, string imageName, byte[] image)
         {
             var container = client.GetContainerReference(string.Format(IMAGE_CONTAINER_NAME, gameId));
             
             
-            container.CreateIfNotExists(BlobContainerPublicAccessType.Container);
-
+            await container.CreateIfNotExistsAsync(BlobContainerPublicAccessType.Container, null, null);
+            
+                
             var imageBlob = container.GetBlockBlobReference(imageName);
-            imageBlob.UploadFromByteArray(image, 0, image.Length);
+            await imageBlob.UploadFromByteArrayAsync(image, 0, image.Length);
+            return imageBlob.Uri.AbsoluteUri;
 
 
         }

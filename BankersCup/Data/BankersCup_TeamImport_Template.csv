@@ -1,7 +1,7 @@
-Team Name,Institution,Registration Code,Starting Hole,"Tee Time (Optional, Format: HH:mm)",Player 1 - Name,Player 1 - Company,Player 1 - Email,Player 2 - Name,Player 2 - Company,Player 2 - Email
-RBC Team 1,RBC,11111,1,,Bill Baldasti,Infusion,bbaldasti@infusion.com,Camille Wilson,RBC,cwilson@rbc.com
-BMO Team 1,BMO,22222,10,,Steve Ellis,Infusion,sellis@infusion.com,Danny Fenney,BMO,dfenney@bmo.com
-TD Team 1,TD,33333,2,,Sujan M,Microsoft,sujanm@microsoft.com,Mok Choi,TD,mchoi@td.ca
-RBC Team 2,RBC,44444,11,,Chip Bunker,RBC,cbunker@rbc.com,Dwayne F,Microsoft,dwaynef@microsoft.com
-BMO Team 2,BMO,55555,3,,Paul Dilda,BMO,pdilda@bmo.com,Andrea Bowles,Microsoft,abowles@microsoft.com
-TD Team 2,TD,66666,12,,Eric Broda,TD,ebroda@td.ca,,ytSimon Matthews,Microsoft,smatthews@microsoft.com
+Team Name,Institution,Starting Hole,"Tee Time (Optional, Format: HH:mm)",Player 1 - Name,Player 1 - Company,Player 1 - Email,Player 1 - Registration Code,Player 2 - Name,Player 2 - Company,Player 2 - Email,Player 2 - Registration Code
+RBC Team 1,RBC,1,,Bill Baldasti,Infusion,bbaldasti@infusion.com,11111,Camille Wilson,RBC,cwilson@rbc.com,22222
+BMO Team 1,BMO,10,,Steve Ellis,Infusion,sellis@infusion.com,33333,Danny Fenney,BMO,dfenney@bmo.com,44444
+TD Team 1,TD,2,,Sujan M,Microsoft,sujanm@microsoft.com,55555,Mok Choi,TD,mchoi@td.ca,66666
+RBC Team 2,RBC,11,,Chip Bunker,RBC,cbunker@rbc.com,77777,Dwayne F,Microsoft,dwaynef@microsoft.com,88888
+BMO Team 2,BMO,3,,Paul Dilda,BMO,pdilda@bmo.com,99999,Andrea Bowles,Microsoft,abowles@microsoft.com,12345
+TD Team 2,TD,12,,Eric Broda,TD,ebroda@td.ca,23456,Simon Matthews,Microsoft,smatthews@microsoft.com,34567

@@ -162,7 +162,12 @@
     <Compile Include="Models\ContactDetailsViewModel.cs" />
     <Compile Include="Models\Course.cs" />
     <Compile Include="Models\ExportScoresViewModel.cs" />
+    <Compile Include="Models\GalleryImageViewModel.cs" />
+    <Compile Include="Models\GalleryViewModel.cs" />
     <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\GameComment.cs" />
+    <Compile Include="Models\GameCommentListViewModel.cs" />
+    <Compile Include="Models\GameCommentViewModel.cs" />
     <Compile Include="Models\GameDetailsViewModel.cs" />
     <Compile Include="Models\HoleInfo.cs" />
     <Compile Include="Models\ImageModel.cs" />
@@ -285,6 +290,7 @@
     <Content Include="Views\Admin\Scorecard.cshtml" />
     <Content Include="Views\Admin\ExportScores.cshtml" />
     <Content Include="Views\Game\Gallery.cshtml" />
+    <Content Include="Views\Game\Comments.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

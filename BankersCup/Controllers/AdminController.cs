@@ -27,7 +27,7 @@ namespace BankersCup.Controllers
 
         public async Task<ActionResult> FixHole2(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
 
             var hole2 = game.GameCourse.Holes.FirstOrDefault(h => h.HoleNumber == 2);
             hole2.Par = 3;
@@ -48,7 +48,7 @@ namespace BankersCup.Controllers
 
         public async Task<ActionResult> ExportScores(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             List<string> teamScoreDataList = new List<string>();
@@ -151,14 +151,14 @@ namespace BankersCup.Controllers
 
         public async Task<ActionResult> Index(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
             return View(game);
         }
 
         public async Task<ActionResult> Register(int id, int? teamId)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             Team teamModel = new Team();
@@ -178,7 +178,7 @@ namespace BankersCup.Controllers
         [HttpPost]
         public async Task<ActionResult> Register(int id, Team newTeam)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             if (newTeam.TeamId == 0)
@@ -408,7 +408,7 @@ namespace BankersCup.Controllers
         [HttpPost]
         public async Task<ActionResult> ImportTeams(int id, ImportTeamsViewModel importVM)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             if (importVM.TeamsFile != null)
@@ -486,7 +486,7 @@ namespace BankersCup.Controllers
 
         public async Task<ActionResult> Leaderboard(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             var leaderboard = new AdminLeaderboardViewModel();
@@ -560,7 +560,7 @@ namespace BankersCup.Controllers
 
         public async Task<ActionResult> Scorecard(int id, int teamId)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             ScorecardViewModel vm = new ScorecardViewModel();

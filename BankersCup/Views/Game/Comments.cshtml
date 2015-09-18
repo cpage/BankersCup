@@ -1,0 +1,54 @@
+﻿@model BankersCup.Models.GameCommentListViewModel
+
+@{
+    ViewBag.Title = "Comments";
+    Layout = "~/Views/Shared/_HeaderLayout.cshtml";
+}
+
+@using (Html.BeginForm())
+{
+@Html.AntiForgeryToken()
+
+@*<img class="dialog-section-image" src="~/Content/icon_round_details.png" />*@
+<table class="table-dialog-content">
+    <tbody>
+        <tr>
+            <td>
+                <textarea id="NewComment" name="NewComment" style="width:100%; height: 10em;"></textarea>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <input type="submit" id="SaveComment" value="Save" class="green-button dark-button-full table-data-entry" />
+            </td>
+        </tr>
+    </tbody>
+</table>
+}
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td>Name</td>
+            <td>Comment</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model.ExistingComments)
+        {
+            <tr class="table-dialog-content">
+                <td class="comment-cell-teamname">
+                    <span>@comment.PlayerName:</span>
+                </td>
+                <td class="comment-cell-contents">
+                <p>@comment.Comment</p>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section scripts {
+    <script>
+
+    </script>
+}

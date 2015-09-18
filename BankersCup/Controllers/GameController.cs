@@ -42,7 +42,7 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Details(int? id)
         {
             
-            var game = await DocumentDBRepository.GetGameById(id.GetValueOrDefault(1));
+            var game = await DocumentDBRepository.GetGameByIdAsync(id.GetValueOrDefault(1));
             ViewBag.GameId = game.GameId;
 
             var currentRegistration = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
@@ -134,7 +134,7 @@ namespace BankersCup.Controllers
         [RegistrationRequired]
         public async Task<ActionResult> MyTeam(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
             var currentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id).TeamId);
             var details = new GameDetailsViewModel();
@@ -157,7 +157,7 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> Join(JoinGameViewModel joinModel)
         {
             // get game and validate if the registration code exists
-            var game = await DocumentDBRepository.GetGameById(joinModel.Id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(joinModel.Id);
             ViewBag.GameId = game.GameId;
 
             
@@ -176,7 +176,7 @@ namespace BankersCup.Controllers
         public async Task<ActionResult> AddHole(int id, int? holeNumber)
         {
             // get game here
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             var teamId = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId).TeamId;
@@ -240,7 +240,7 @@ namespace BankersCup.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> AddHole(int id, AddHoleScoreViewModel newScore)
         {
-            var game = await DocumentDBRepository.GetGameById(newScore.GameId);
+            var game = await DocumentDBRepository.GetGameByIdAsync(newScore.GameId);
             ViewBag.GameId = game.GameId;
 
             var score = game.Scores.FirstOrDefault(s => s.TeamId == newScore.TeamId && s.HoleNumber == newScore.HoleNumber);
@@ -298,7 +298,7 @@ namespace BankersCup.Controllers
         [RegistrationRequired]
         public async Task<ActionResult> Leaderboard(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             LeaderboardViewModel leaderboardVM = new LeaderboardViewModel();
@@ -313,7 +313,7 @@ namespace BankersCup.Controllers
         [RegistrationRequired]
         public async Task<ActionResult> Scorecard(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             ScorecardViewModel vm = new ScorecardViewModel();
@@ -326,7 +326,7 @@ namespace BankersCup.Controllers
         [RegistrationRequired]
         public async Task<ActionResult> Contact(int id, string topic)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id).TeamId);
@@ -348,7 +348,7 @@ namespace BankersCup.Controllers
                 return View(details);
             }
 
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
 
             var contact = new ContactDetails();
             contact.Name = details.Name;
@@ -368,12 +368,103 @@ namespace BankersCup.Controllers
         [RegistrationRequired]
         public async Task<ActionResult> Gallery(int id)
         {
-            var game = await DocumentDBRepository.GetGameById(id);
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
             
 
-            return View();
+            return View(createGalleryVM(game));
+        }
+
+        [RegistrationRequired, HttpPost]
+        public async Task<ActionResult> Gallery(int id, GalleryViewModel vm)
+        {
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
+            ViewBag.GameId = game.GameId;
+
+            int bytesRead = 0;
+            var imageBytes = new byte[vm.UploadedImage.InputStream.Length];
+            var imageStream = vm.UploadedImage.InputStream;
+
+            while(bytesRead < imageStream.Length)
+            {
+                bytesRead += imageStream.Read(imageBytes, bytesRead, (int)imageStream.Length - bytesRead);
+            }
+
+            var url = await AzureStorageRepository.SaveImageAsync(game.GameId, vm.UploadedImage.FileName, imageBytes);
+
+            var image = new Image();
+            image.Caption = vm.UploadedImage.FileName;
+            image.GameId = game.GameId;
+            image.ImageUrl = url;
+            var regValues = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+
+            image.UploadedById = regValues.PlayerId;
+            image.UploadedByTeamId = regValues.TeamId;
+            image.UploadedOn = DateTime.Now;
+
+            if(game.Images == null)
+            {
+                game.Images = new List<Image>();
+            }
+
+            game.Images.Add(image);
+
+            await DocumentDBRepository.UpdateGame(game);
+
+
+            return View(createGalleryVM(game));
+        }
+
+        [RegistrationRequired]
+        public async Task<ActionResult> Comments(int id)
+        {
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
+            ViewBag.GameId = game.GameId;
+
+            if(game.Comments == null)
+            {
+                game.Comments = new List<GameComment>();
+            }
+
+            GameCommentListViewModel vm = createGameCommnetListVM(game);
+
+            return View(vm);
+        }
+
+        [RegistrationRequired, HttpPost]
+        public async Task<ActionResult> Comments(int id, GameCommentListViewModel vm)
+        {
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
+            ViewBag.GameId = game.GameId;
+
+            var regValues = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+            var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == regValues.TeamId);
+            var teamName = team.TeamName;
+            var playerName = team.Players.FirstOrDefault(p => p.PlayerId == regValues.PlayerId).Name;
+
+            var newComment = new GameComment()
+            {
+                PlayerId = regValues.PlayerId,
+                PlayerName = playerName,
+                TeamId = regValues.TeamId,
+                TeamName = teamName,
+                GameId = game.GameId,
+                CommentText = vm.NewComment,
+                CreatedOn = DateTime.Now
+            };
+
+            if(game.Comments == null)
+            {
+                game.Comments = new List<GameComment>();
+            }
+
+            game.Comments.Add(newComment);
+
+            await DocumentDBRepository.UpdateGame(game);
+
+
+            return View(createGameCommnetListVM(game));
         }
 
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)
@@ -432,6 +523,34 @@ namespace BankersCup.Controllers
             return leaderboard.OrderBy(s => s.AgainstPar).ToList();
         }
 
+        private GameCommentListViewModel createGameCommnetListVM(Game game)
+        {
+            var vm = new GameCommentListViewModel();
+
+            vm.ExistingComments = new List<GameCommentViewModel>();
+
+            vm.ExistingComments = game.Comments
+                .OrderByDescending(c => c.CreatedOn)
+                .Select(c => new GameCommentViewModel() { Comment = c.CommentText, CreatedOn = c.CreatedOn, PlayerName = c.PlayerName, TeamName = c.TeamName, HoleNumber = c.HoleNumber })
+                .ToList();
+            return vm;
+        }
+
+        private GalleryViewModel createGalleryVM(Game game)
+        {
+            if(game.Images == null)
+            {
+                game.Images = new List<Image>();
+            }
+
+            var vm = new GalleryViewModel();
+            vm.Images = game.Images
+                .OrderByDescending(i => i.UploadedOn)
+                .Select(i => new GalleryImageViewModel() { Caption = i.Caption, HoleNumber = i.HoleNumber, TakenBy = i.UploadedById, Url = i.ImageUrl })
+                .ToList();
+
+            return vm;
+        }
 
     }
 

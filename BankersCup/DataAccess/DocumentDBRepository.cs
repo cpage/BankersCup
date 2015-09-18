@@ -150,7 +150,7 @@ namespace BankersCup.DataAccess
             return await Task<List<ContactDetails>>.Run(() => Client.CreateDocumentQuery<ContactDetails>(ContactCollection.DocumentsLink).AsEnumerable().ToList());
         }
 
-        public static async Task<Game> GetGameById(int gameId)
+        public static async Task<Game> GetGameByIdAsync(int gameId)
         {
             return await Task<Game>.Run(() => Client.CreateDocumentQuery<Game>(GameCollection.DocumentsLink).Where(g => g.GameId == gameId).AsEnumerable().FirstOrDefault());
             //return await Task<Game>.Run(() => localGame);
@@ -169,7 +169,7 @@ namespace BankersCup.DataAccess
 
         public static async Task<Document> DeleteGame(int id, bool hardDelete = false)
         {
-            var game = await GetGameById(id);
+            var game = await GetGameByIdAsync(id);
             if (game == null)
                 return null;
 
