@@ -8,6 +8,7 @@ using System.Web.Mvc;
 using BankersCup.DataAccess;
 using System.Threading.Tasks;
 using BankersCup.Helpers;
+using System.Configuration;
 
 namespace BankersCup.Controllers
 {
@@ -41,8 +42,14 @@ namespace BankersCup.Controllers
         [RegistrationRequired]
         public async Task<ActionResult> Details(int? id)
         {
-            
-            var game = await DocumentDBRepository.GetGameByIdAsync(id.GetValueOrDefault(1));
+
+            int defaultGameId;
+            if (!Int32.TryParse(ConfigurationManager.AppSettings["defaultGameId"], out defaultGameId))
+            {
+                defaultGameId = 1;
+            }
+
+            var game = await DocumentDBRepository.GetGameByIdAsync(id.GetValueOrDefault(defaultGameId));
             ViewBag.GameId = game.GameId;
 
             var currentRegistration = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);

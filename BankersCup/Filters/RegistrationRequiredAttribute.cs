@@ -1,6 +1,7 @@
 ﻿using BankersCup.Helpers;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -22,7 +23,10 @@ namespace BankersCup.Filters
             int gameId;
             if(id == null || !Int32.TryParse(id.ToString(), out gameId))
             {
-                gameId = 1;
+                if (!Int32.TryParse(ConfigurationManager.AppSettings["defaultGameId"], out gameId))
+                {
+                    gameId = 1;
+                }
             }
 
             var registeredTeamId = RegistrationHelper.GetRegistrationCookieValue(filterContext.HttpContext, gameId).TeamId;

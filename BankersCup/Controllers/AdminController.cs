@@ -431,6 +431,8 @@ namespace BankersCup.Controllers
                 }
 
                 int successfullyCreated = 0;
+                Dictionary<string, int> regCode = new Dictionary<string, int>();
+                
                 var teamLines = contents.Split(Environment.NewLine.ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
                 for (int count = 1; count < teamLines.Length; count++)
                 {
@@ -459,14 +461,39 @@ namespace BankersCup.Controllers
                     player1.Name = teamData[4];
                     player1.Company = teamData[5];
                     player1.Email = teamData[6];
+                    if(player1.Email == "n@na.ca")
+                    {
+                        player1.Email = player1.Name.Replace(' ', '.').ToLower() + "@" + player1.Company.ToLower() + ".com";
+                    }
                     player1.RegistrationCode = teamData[7];
+
+                    if(regCode.ContainsKey(player1.RegistrationCode))
+                    {
+                        regCode[player1.RegistrationCode]++;
+                    }
+                    else
+                    {
+                        regCode.Add(player1.RegistrationCode, 1);
+                    }
 
                     var player2 = new Player();
                     player2.PlayerId = playerId++;
                     player2.Name = teamData[8];
                     player2.Company = teamData[9];
                     player2.Email = teamData[10];
+                    if (player2.Email == "n@na.ca")
+                    {
+                        player2.Email = player2.Name.Replace(' ', '.').ToLower() + "@" + player2.Company.ToLower() + ".com";
+                    }
                     player2.RegistrationCode = teamData[11];
+                    if (regCode.ContainsKey(player2.RegistrationCode))
+                    {
+                        regCode[player2.RegistrationCode]++;
+                    }
+                    else
+                    {
+                        regCode.Add(player2.RegistrationCode, 1);
+                    }
 
                     team.Players = new List<Player>() { player1, player2 };
 
@@ -474,7 +501,14 @@ namespace BankersCup.Controllers
                     successfullyCreated++;
                 }
 
-                
+
+                var duplicates = regCode.Where(codeCount => codeCount.Value > 1).ToList();
+                if(duplicates.Count > 0)
+                {
+                    string errorMessage = "Duplicate registration codes found: ";
+                    duplicates.ForEach(kv => errorMessage += kv.Key + ",");
+                    throw new Exception(errorMessage);
+                }
                 await DocumentDBRepository.UpdateGame(game);
 
                 importVM.Message = string.Format("{0} teams successfully created.", successfullyCreated);
