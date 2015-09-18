@@ -10,9 +10,19 @@
 @{int count = 0;}
 @foreach(var player in Model.CurrentTeam.Players)
 {
+    if(Model.CurrentPlayerId == player.PlayerId)
+{
     <p>
-    @Html.RadioButtonFor(model => player.Name, count++, new { @class = "radio_contact" }) @player.Name (@player.Company)
+    @Html.RadioButtonFor(model => player.Name, count++, new { @class = "radio_contact", @Checked="" }) @player.Name (@player.Company)
     </p>
+}
+else
+{
+<p>
+    @Html.RadioButtonFor(model => player.Name, count++, new { @class = "radio_contact" }) @player.Name (@player.Company)
+</p>
+
+}
 }
 
 @using (Html.BeginForm())

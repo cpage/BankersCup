@@ -336,12 +336,16 @@ namespace BankersCup.Controllers
             var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
 
-            var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id).TeamId);
+            var regValues = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id);
+            var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == regValues.TeamId);
+            var player = team.Players.FirstOrDefault(p => p.PlayerId == regValues.PlayerId);
 
             ContactDetailsViewModel contactDetails = new ContactDetailsViewModel();
             contactDetails.CurrentTeam = team;
             contactDetails.Topic = topic;
-            
+            contactDetails.Email = player.Email;
+            contactDetails.CurrentPlayerId = player.PlayerId;
+
             return View(contactDetails);
         }
 

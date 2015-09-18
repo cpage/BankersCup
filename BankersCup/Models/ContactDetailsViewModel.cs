@@ -9,6 +9,7 @@ namespace BankersCup.Models
     {
         public int GameId { get; set; }
         public Team CurrentTeam { get; set; }
+        public int CurrentPlayerId { get; set; }
         public string Name { get; set; }
         public string Email { get; set; }
         public string Company { get; set; }
