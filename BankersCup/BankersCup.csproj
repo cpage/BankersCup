@@ -203,6 +203,7 @@
     </Content>
     <Content Include="Content\divider_green.png" />
     <Content Include="Content\divider_white.png" />
+    <Content Include="Content\header_image_nodate.png" />
     <Content Include="Content\header_image.png" />
     <Content Include="Content\icon_edit.png" />
     <Content Include="Content\icon_golf_course.png" />
@@ -212,9 +213,11 @@
     <Content Include="Content\icon_teams.png" />
     <Content Include="Content\logos_small.png" />
     <Content Include="Content\logo_infusion.png" />
+    <Content Include="Content\logo_lrg_nodate.png" />
     <Content Include="Content\logo_lrg.png" />
     <Content Include="Content\logo_med.png" />
     <Content Include="Content\logo_msft.png" />
+    <Content Include="Content\logo_sml_nodate.png" />
     <Content Include="Content\logo_sml.png" />
     <Content Include="Content\Site.min.css">
       <DependentUpon>Site.css</DependentUpon>
@@ -293,6 +296,7 @@
     <Content Include="Views\Admin\ExportScores.cshtml" />
     <Content Include="Views\Game\Gallery.cshtml" />
     <Content Include="Views\Game\Comments.cshtml" />
+    <Content Include="Views\Admin\Comments.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

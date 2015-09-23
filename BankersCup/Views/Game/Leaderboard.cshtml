@@ -29,3 +29,30 @@
         }
     </tbody>
 </table>
+
+<table class="table-dialog-content">
+    <thead>
+        <tr>
+            <td colspan="2">Latest Golf Talk</td>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var comment in Model.Comments)
+        {
+            <tr class="table-dialog-content">
+                <td class="comment-cell-teamname">
+                    <span>@comment.PlayerName @if (comment.HoleNumber > 0)
+                    {<text>(Hole #@comment.HoleNumber)</text>}:</span>
+                </td>
+                <td class="comment-cell-contents">
+                    <p>@comment.Comment</p>
+                </td>
+            </tr>
+        }
+        <tr>
+            <td colspan="2">
+                <a href="@Url.Action("Comments", new { id = ViewBag.GameId })"><input type="button" id="ViewComments" value="View All" class="green-button dark-button-full table-data-entry" /></a>
+            </td>
+        </tr>
+    </tbody>
+</table>

@@ -143,11 +143,15 @@ namespace BankersCup.Controllers
         {
             var game = await DocumentDBRepository.GetGameByIdAsync(id);
             ViewBag.GameId = game.GameId;
-            var currentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id).TeamId);
+            var regValues = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, id);
+
+            var currentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == regValues.TeamId);
+            var currentPlayer = currentTeam.Players.FirstOrDefault(p => p.PlayerId == regValues.PlayerId);
             var details = new GameDetailsViewModel();
             details.GameId = id;
             details.CurrentTeam = currentTeam;
             details.GameCourse = game.GameCourse;
+            details.CurrentPlayerId = currentPlayer.PlayerId;
 
             return View(details);
         }
@@ -228,6 +232,18 @@ namespace BankersCup.Controllers
                 averageScore = game.Scores.Where(s => s.HoleNumber == currentHole).Average(s => s.Score);
             }
 
+            var comments = game.Comments.Where(c => c.HoleNumber == currentHole)
+                .OrderByDescending(c => c.CreatedOn)
+                .Select(c => new GameCommentViewModel()
+                {
+                    Comment = c.CommentText,
+                    CreatedOn = c.CreatedOn,
+                    HoleNumber = c.HoleNumber,
+                    PlayerName = c.PlayerName,
+                    TeamName = c.TeamName
+                })
+                .ToList();
+
             AddHoleScoreViewModel vm = new AddHoleScoreViewModel()
             {
                 GameId = game.GameId,
@@ -236,7 +252,8 @@ namespace BankersCup.Controllers
                 Distance = holeInfo.Distance,
                 TeamId = teamId,
                 TeamScore = existingHoleScore == null ? holeInfo.Par : existingHoleScore.Score,
-                AverageScore = averageScore
+                AverageScore = averageScore,
+                Comments = comments
             };
             
             return View(vm);
@@ -250,54 +267,63 @@ namespace BankersCup.Controllers
             var game = await DocumentDBRepository.GetGameByIdAsync(newScore.GameId);
             ViewBag.GameId = game.GameId;
 
-            var score = game.Scores.FirstOrDefault(s => s.TeamId == newScore.TeamId && s.HoleNumber == newScore.HoleNumber);
-
-            if(score == null)
-            {
-                score = new TeamHoleScore();
-                game.Scores.Add(score);
-                score.TeamId = newScore.TeamId;
-                score.HoleNumber = newScore.HoleNumber;
-            }
-
-            score.Score = newScore.TeamScore;
-            score.AgainstPar = newScore.TeamScore - newScore.Par;
-
-            string action = "Details";
-            dynamic actionParams;
-
-            if(newScore.MoveNext || newScore.MovePrevious || newScore.SaveScore)
-            {
-                action = "AddHole";
-
-                int nextHole = newScore.HoleNumber;
-                if (newScore.MoveNext)
-                {
-                    if (++nextHole > 18)
-                    {
-                        nextHole = 1;
-                    }
-                }
-                if (newScore.MovePrevious)
-                {
-                    if (--nextHole < 1)
-                    {
-                        nextHole = 18;
-                    }
-                }
-                actionParams = new { id = newScore.GameId, holeNumber = nextHole };
-            }
-            else
-            {
-                actionParams = new { id = newScore.GameId };
-            }
-
             if (newScore.SaveScore)
+            {
+                var score = game.Scores.FirstOrDefault(s => s.TeamId == newScore.TeamId && s.HoleNumber == newScore.HoleNumber);
+
+                if (score == null)
+                {
+                    score = new TeamHoleScore();
+                    game.Scores.Add(score);
+                    score.TeamId = newScore.TeamId;
+                    score.HoleNumber = newScore.HoleNumber;
+                }
+
+                score.Score = newScore.TeamScore;
+                score.AgainstPar = newScore.TeamScore - newScore.Par;
+            }
+
+            if(newScore.SaveComment && !string.IsNullOrWhiteSpace(newScore.NewComment))
+            {
+                var regValues = RegistrationHelper.GetRegistrationCookieValue(this.HttpContext, game.GameId);
+                var team = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == regValues.TeamId);
+                var player = team.Players.FirstOrDefault(p => p.PlayerId == regValues.PlayerId);
+
+                game.Comments.Add(new GameComment()
+                {
+                    GameId = game.GameId,
+                    PlayerId = player.PlayerId,
+                    PlayerName = player.Name,
+                    TeamId = team.TeamId,
+                    TeamName = team.TeamName,
+                    CreatedOn = DateTime.Now,
+                    HoleNumber = newScore.HoleNumber,
+                    CommentText = newScore.NewComment
+                });
+            }
+
+            int nextHole = newScore.HoleNumber;
+            if (newScore.MoveNext)
+            {
+                if (++nextHole > 18)
+                {
+                    nextHole = 1;
+                }
+            }
+            if (newScore.MovePrevious)
+            {
+                if (--nextHole < 1)
+                {
+                    nextHole = 18;
+                }
+            }
+
+            if (newScore.SaveScore || newScore.SaveComment)
             {
                 await DocumentDBRepository.UpdateGame(game);
             }
 
-            return RedirectToAction(action, actionParams);
+            return RedirectToAction("AddHole", new { id = newScore.GameId, holeNumber = nextHole });
             
 
         }
@@ -313,6 +339,20 @@ namespace BankersCup.Controllers
             leaderboardVM.CurrentTeam = game.RegisteredTeams.FirstOrDefault(t => t.TeamId == teamId);
             leaderboardVM.HolesPlayed = calculateHolesPlayedForCurrentTeam(game);
             leaderboardVM.Teams = calculateLeaderboardBasedOnCurrentTeam(game);
+
+            leaderboardVM.Comments = game.Comments
+                .Where(c => c.PlayerId > 0 || c.HoleNumber == 0)
+                .OrderByDescending(c => c.CreatedOn)
+                .Take(5)
+                .Select(c => new GameCommentViewModel()
+                {
+                    Comment = c.CommentText,
+                    CreatedOn = c.CreatedOn,
+                    HoleNumber = c.HoleNumber,
+                    PlayerName = c.PlayerName,
+                    TeamName = c.TeamName
+                })
+                .ToList();
 
             return View(leaderboardVM);
         }
@@ -438,7 +478,7 @@ namespace BankersCup.Controllers
                 game.Comments = new List<GameComment>();
             }
 
-            GameCommentListViewModel vm = createGameCommnetListVM(game);
+            GameCommentListViewModel vm = createGameCommentListVM(game);
 
             return View(vm);
         }
@@ -475,7 +515,7 @@ namespace BankersCup.Controllers
             await DocumentDBRepository.UpdateGame(game);
 
 
-            return View(createGameCommnetListVM(game));
+            return View(createGameCommentListVM(game));
         }
 
         private int calculateHolesPlayedForCurrentTeam(Game currentGame)
@@ -534,18 +574,20 @@ namespace BankersCup.Controllers
             return leaderboard.OrderBy(s => s.AgainstPar).ToList();
         }
 
-        private GameCommentListViewModel createGameCommnetListVM(Game game)
+        private GameCommentListViewModel createGameCommentListVM(Game game)
         {
             var vm = new GameCommentListViewModel();
 
             vm.ExistingComments = new List<GameCommentViewModel>();
 
             vm.ExistingComments = game.Comments
+                //.Where(c => c.PlayerId > 0 || c.HoleNumber == 0)
                 .OrderByDescending(c => c.CreatedOn)
                 .Select(c => new GameCommentViewModel() { Comment = c.CommentText, CreatedOn = c.CreatedOn, PlayerName = c.PlayerName, TeamName = c.TeamName, HoleNumber = c.HoleNumber })
                 .ToList();
             return vm;
         }
+
 
         private GalleryViewModel createGalleryVM(Game game)
         {

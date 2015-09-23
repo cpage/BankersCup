@@ -12,7 +12,7 @@ namespace BankersCup.Models
 
         public Team CurrentTeam { get; set; }
         public int HolesPlayed { get; set; }
-
+        public int CurrentPlayerId { get; set; }
         public List<TeamHoleScore> CurrentTeamScores { get; set; }
         public List<LeaderboardEntryViewModel> Leaderboard { get; set; }
     }

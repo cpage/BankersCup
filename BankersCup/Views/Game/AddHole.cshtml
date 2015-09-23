@@ -21,6 +21,7 @@ using (Html.BeginForm())
         @Html.HiddenFor(model => model.MoveNext)
         @Html.HiddenFor(model => model.MovePrevious)
         @Html.HiddenFor(model => model.SaveScore)
+        @Html.HiddenFor(model => model.SaveComment)
 
     @*<img class="dialog-section-image" src="~/Content/icon_round_details.png" />*@
     <table class="table-dialog-content">
@@ -59,10 +60,46 @@ using (Html.BeginForm())
                 </td>
             </tr>
         </tbody>
-    </table> 
+    </table>
 
+    <table class="table-dialog-content">
+        <tbody>
+            <tr>
+                <td>
+                    <textarea id="NewComment" name="NewComment" class="comment-textarea"></textarea>
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    <input type="submit" id="saveComment" value="Save" class="green-button dark-button-full table-data-entry" />
+                </td>
+            </tr>
+        </tbody>
+    </table>
     }
+    <table class="table-dialog-content">
+        <thead>
+            <tr>
+                <td colspan="2">Comments</td>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var comment in Model.Comments)
+            {
+                <tr class="table-dialog-content">
+                    <td class="comment-cell-teamname">
+                        <span>@comment.PlayerName:</span>
+                    </td>
+                    <td class="comment-cell-contents">
+                        <p>@comment.Comment</p>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
 }
+
 
 @section scripts {
     <script>
@@ -76,6 +113,10 @@ using (Html.BeginForm())
             });
             $("#saveScore").click(function () {
                 $("#SaveScore").val("True");
+            });
+
+            $("#saveComment").click(function () {
+                $("#SaveComment").val("True");
             });
         })
 

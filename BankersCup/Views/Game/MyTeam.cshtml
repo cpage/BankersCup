@@ -32,11 +32,12 @@
         </tr>
     </thead>
     <tbody>
-        @foreach (var player in Model.CurrentTeam.Players) { 
-        <tr>
-            <td class="smaller-text">@player.Name</td>
-            <td class="smaller-text">@player.Company</td>
-        </tr>
+        @foreach (var player in Model.CurrentTeam.Players)
+        {
+            <tr class="@if(Model.CurrentPlayerId == player.PlayerId) {<text>current-team</text>}">
+                <td class="smaller-text">@player.Name</td>
+                <td class="smaller-text">@player.Company</td>
+            </tr>
         }
     </tbody>
 </table>

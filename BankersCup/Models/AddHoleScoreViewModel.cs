@@ -18,5 +18,8 @@ namespace BankersCup.Models
         public bool MoveNext { get; set; }
         public bool MovePrevious { get; set; }
         public bool SaveScore { get; set; }
+        public List<GameCommentViewModel> Comments {get; set;}
+        public string NewComment { get; set; }
+        public bool SaveComment { get; set; }
     }
 }

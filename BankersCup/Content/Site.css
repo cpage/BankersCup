@@ -181,6 +181,11 @@ a,a:visited,a:active,a:hover {
 .dark-button-2col {
     width: 45%;
 }
+
+.dark-button-full {
+    width: 100%;
+}
+
 .add-hole-button {
     background-color: #25AD5F;
     color: white;

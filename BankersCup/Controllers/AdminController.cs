@@ -1,5 +1,6 @@
 ﻿using BankersCup.DataAccess;
 using BankersCup.Filters;
+using BankersCup.Helpers;
 using BankersCup.Models;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Auth;
@@ -141,8 +142,13 @@ namespace BankersCup.Controllers
         {
             if(authCode == DateTime.Now.ToString("yyyyddMM"))
             {
+                int defaultGameId;
+                if(!Int32.TryParse(ConfigurationManager.AppSettings["defaultGameId"], out defaultGameId))
+                {
+                    defaultGameId = 1;
+                }
                 this.HttpContext.Response.SetCookie(new HttpCookie("AdminAccess", DateTime.Now.ToString("yyyyMMdd")));
-                return RedirectToAction("Index", new { id = 1 });
+                return RedirectToAction("Index", new { id = defaultGameId });
             }
 
             return View();
@@ -224,6 +230,52 @@ namespace BankersCup.Controllers
             await DocumentDBRepository.UpdateGame(game);
 
             return RedirectToAction("Index", new { id = id });
+        }
+
+        public async Task<ActionResult> Comments(int id)
+        {
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
+            ViewBag.GameId = game.GameId;
+
+            if (game.Comments == null)
+            {
+                game.Comments = new List<GameComment>();
+            }
+
+            GameCommentListViewModel vm = createGameCommentListVM(game);
+
+            return View(vm);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> Comments(int id, GameCommentListViewModel vm)
+        {
+            var game = await DocumentDBRepository.GetGameByIdAsync(id);
+            ViewBag.GameId = game.GameId;
+
+            
+            var newComment = new GameComment()
+            {
+                PlayerId = 0,
+                PlayerName = "Admin",
+                TeamId = 0,
+                TeamName = "Admin",
+                GameId = game.GameId,
+                CommentText = vm.NewComment,
+                CreatedOn = DateTime.Now
+            };
+
+            if (game.Comments == null)
+            {
+                game.Comments = new List<GameComment>();
+            }
+
+            game.Comments.Add(newComment);
+
+            await DocumentDBRepository.UpdateGame(game);
+
+
+            return View(createGameCommentListVM(game));
         }
 
         public async Task<ActionResult> GenerateSampleGame()
@@ -369,6 +421,34 @@ namespace BankersCup.Controllers
                 s.AgainstPar = s.Score - game.GameCourse.Holes[s.HoleNumber - 1].Par;
             }
 
+            game.Comments = new List<GameComment>();
+            game.Comments.Add(new GameComment()
+            {
+                GameId = game.GameId,
+                PlayerId = 0,
+                PlayerName = "Admin",
+                HoleNumber = 0,
+                TeamId = 0,
+                TeamName = "Admin",
+                CreatedOn = DateTime.Now,
+                CommentText = string.Format("Welcome to the {0} at {1}! Par for the course is: {2} with a total distance of {3} yards. Good luck!", game.Name, game.GameCourse.Name, game.GameCourse.Par, game.GameCourse.Distance)
+            });
+
+            foreach(var hole in game.GameCourse.Holes)
+            {
+                game.Comments.Add(new GameComment()
+                {
+                    GameId = game.GameId,
+                    HoleNumber = hole.HoleNumber,
+                    PlayerId = 0,
+                    PlayerName = "Admin",
+                    TeamId = 0,
+                    TeamName = "Admin",
+                    CreatedOn = DateTime.Now,
+                    CommentText = string.Format("Hole #{0} is a par {1} with a distance of {2} yards.", hole.HoleNumber, hole.Par, hole.Distance)
+                });
+
+            }
             await DocumentDBRepository.CreateGame(game);
 
             return RedirectToAction("Index", "Admin", new { id = game.GameId });
@@ -604,5 +684,21 @@ namespace BankersCup.Controllers
             
             return View(vm);
         }
+
+        private GameCommentListViewModel createGameCommentListVM(Game game)
+        {
+            var vm = new GameCommentListViewModel();
+
+            vm.ExistingComments = new List<GameCommentViewModel>();
+
+            vm.ExistingComments = game.Comments
+                //.Where(c => c.PlayerId > 0 || c.HoleNumber == 0)
+                .OrderByDescending(c => c.CreatedOn)
+                .Select(c => new GameCommentViewModel() { Comment = c.CommentText, CreatedOn = c.CreatedOn, PlayerName = c.PlayerName, TeamName = c.TeamName, HoleNumber = c.HoleNumber })
+                .ToList();
+            return vm;
+        }
+
+
     }
 }
